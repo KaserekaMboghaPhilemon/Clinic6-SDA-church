@@ -1,0 +1,52 @@
+.navbar{
+  width:100%;
+  background: linear-gradient(90deg,#0f172a,#0b1220);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.4);
+}
+.navbar__container{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px;
+  gap:12px;
+}
+.navbar__brand{display:flex;align-items:center;gap:10px}
+.navbar__logo{width:48px;height:48px;object-fit:contain;border-radius:6px;background:#fff;padding:4px}
+.navbar__titles{display:flex;flex-direction:column;line-height:1}
+.navbar__name{font-weight:700}
+.navbar__subtitle{font-size:12px;opacity:0.85}
+.navbar__nav{display:flex;gap:14px}
+.navbar__link{color:rgba(255,255,255,0.9);text-decoration:none;font-weight:500;padding:8px;border-radius:6px}
+.navbar__link:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);text-decoration:none}
+.navbar__actions{display:flex;align-items:center}
+.navbar__donate{background:#ff7b54;border:none;color:#111;padding:8px 12px;border-radius:6px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.3s ease}
+.navbar__donate:hover{filter:brightness(0.95)}
+
+@media (max-width:700px){
+  .navbar__nav{display:none}
+}
+.mode-change{
+background: blue;
+margin: 20px;
+width: 80px;
+display: flex;
+height: auto;
+
+}
+.night-mode{
+  color: black;
+}
+.day-mode{
+  color: blue;
+  background: transparent;
+}
+a{
+  text-decoration: none;
+  /* padding: 5px; */
+}
+a:hover{
+  color: red;
+}
