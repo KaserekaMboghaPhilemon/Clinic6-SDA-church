@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^12.38.0",
+    "i18next": "^26.2.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-i18next": "^17.0.8",
     "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
@@ -20,7 +24,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",

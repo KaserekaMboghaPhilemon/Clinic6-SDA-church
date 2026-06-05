@@ -1,10 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import heroImage from './assets/Clinic6 dream church (2).png'
 import currentStateImage from './assets/church-affected1.jpeg'
 import { MissionImpactSection } from './MissionImpact.jsx'
-import { SeatingSection } from './SeatingPage.jsx'
-import Header from './Header.jsx'
-import Footer from './Footer.jsx'
+import { useT } from './i18n.jsx'
 
 /* =================================================================
    LandingPage.jsx — Clinic Six (6) SDA Church
@@ -50,6 +49,7 @@ const Icon = {
 
 /* ----- Hero Section with background image ----- */
 function Hero() {
+  const { t } = useT()
   return (
     <section id="home" className="relative min-h-[100svh] w-full overflow-hidden text-white -mt-[88px] pt-[88px]">
       {/* Background image */}
@@ -68,35 +68,33 @@ function Hero() {
           className="uppercase tracking-[0.32em] text-[11px] font-semibold text-[#D4AF37] mb-6"
           style={{ textShadow: '0 2px 8px rgba(0,0,0,0.45)' }}
         >
-          Kakuma · Turkana County · Kenya
+          {t('hero.eyebrow')}
         </p>
         <h1
           className="font-display font-black text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[0.95] max-w-5xl text-white"
           style={{ textShadow: '0 6px 28px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4)' }}
         >
-          From the Shade of a Tree to a Sanctuary of Hope.
+          {t('hero.headline')}
         </h1>
         <p
           className="mt-8 max-w-2xl text-lg lg:text-xl leading-relaxed text-white/90"
           style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
         >
-          Founded by 4 families in 2013, Clinic6 SDA Church has grown into a
-          mosaic of 868 souls. Help us replace our storm-destroyed shelter with
-          a permanent house of God.
+          {t('hero.sub')}
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4">
-          <a
-            href="#give"
+          <Link
+            to="/give"
             className="inline-flex items-center justify-center bg-[#D4AF37] text-[#0F2942] font-bold px-8 py-4 rounded-sm hover:bg-yellow-400 transition-colors uppercase tracking-widest text-sm shadow-xl"
           >
-            Partner with Our Mission →
-          </a>
+            {t('hero.cta.give')} →
+          </Link>
           <a
             href="#story"
             className="inline-flex items-center justify-center border-2 border-white/80 text-white font-semibold px-8 py-4 rounded-sm hover:bg-white hover:text-[#0F2942] transition-colors uppercase tracking-widest text-sm backdrop-blur-sm"
           >
-            Read Our Story
+            {t('hero.cta.story')}
           </a>
         </div>
       </div>
@@ -105,12 +103,12 @@ function Hero() {
       <div className="absolute left-1/2 -translate-x-1/2 bottom-6 lg:bottom-10 z-20 w-[94%] max-w-6xl">
         <div className="bg-white/95 backdrop-blur-md shadow-2xl border border-white/60 rounded-sm grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#0F2942]/10">
           {[
-            { value: '868', label: 'Members' },
-            { value: '2013', label: 'Founded' },
-            { value: '3', label: 'Daughter Churches' },
-            { value: 'Approved', label: 'Rift Valley Field' },
-          ].map((s) => (
-            <div key={s.label} className="px-6 py-6 text-center">
+            { value: '868', label: t('stats.members') },
+            { value: '2013', label: t('stats.founded') },
+            { value: '3', label: t('stats.daughterChurches') },
+            { value: t('stats.approved'), label: t('stats.riftValleyField') },
+          ].map((s, idx) => (
+            <div key={idx} className="px-6 py-6 text-center">
               <p className="font-display font-black text-3xl lg:text-4xl text-[#0F2942]">{s.value}</p>
               <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[#2D3142]/70 font-semibold">
                 {s.label}
@@ -125,6 +123,7 @@ function Hero() {
 
 /* ----- Mission & Urgency Section ----- */
 function MissionStory() {
+  const { t } = useT()
   return (
     <section id="story" className="bg-[#F7F4EF] py-24 lg:py-28 pt-32 lg:pt-36">
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
@@ -134,44 +133,38 @@ function MissionStory() {
             <div className="absolute -inset-3 bg-[#D4AF37]/40 -z-10" />
             <img
               src={currentStateImage}
-              alt="Clinic6 church current state — storm damaged structure"
+              alt={t('story.imageAlt')}
               className="w-full h-[460px] lg:h-[560px] object-cover shadow-2xl"
             />
             <div className="absolute bottom-4 left-4 bg-[#0F2942] text-white text-[11px] font-mono uppercase tracking-widest px-3 py-2">
-              Current State · 2026
+              {t('story.currentState')}
             </div>
           </div>
 
           {/* Text */}
           <div>
             <p className="uppercase tracking-[0.3em] text-xs font-bold text-[#D4AF37] mb-5">
-              History & Urgent Need
+              {t('story.urgentNeed')}
             </p>
             <h2 className="font-display font-black text-4xl sm:text-5xl leading-tight text-[#0F2942]">
-              A Faith Refined by Fire and Rain.
+              {t('story.headline')}
             </h2>
             <p className="mt-8 text-base lg:text-lg leading-relaxed text-[#2D3142]">
-              In 2013, four refugee families from Burundi and DRC began
-              worshipping under a single tree in Kakuma 3. From mud seats
-              (<em>"udongo"</em>) and branch walls (<em>"algoropa"</em>), we grew.
-              Last month, dangerous desert rains destroyed our temporary
-              structure. We are now rising to build with heavy-duty metal poles
-              and high-gauge iron—a durable sanctuary designed for the Turkana
-              sun.
+              {t('story.body1')} (<em>"udongo"</em>) {t('story.body2')} (<em>"algoropa"</em>), {t('story.body3')}
             </p>
 
             <div className="mt-10 grid grid-cols-3 gap-4 text-center">
               <div className="border-t-2 border-[#D4AF37] pt-4">
                 <p className="font-display font-black text-2xl text-[#0F2942]">2013</p>
-                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">Founded under a tree</p>
+                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">{t('story.foundedUnderTree')}</p>
               </div>
               <div className="border-t-2 border-[#D4AF37] pt-4">
                 <p className="font-display font-black text-2xl text-[#0F2942]">4</p>
-                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">Founding families</p>
+                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">{t('story.foundingFamilies')}</p>
               </div>
               <div className="border-t-2 border-[#D4AF37] pt-4">
                 <p className="font-display font-black text-2xl text-[#0F2942]">2026</p>
-                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">Storm destroyed</p>
+                <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/70 mt-1">{t('story.stormDestroyed')}</p>
               </div>
             </div>
           </div>
@@ -183,31 +176,32 @@ function MissionStory() {
 
 /* ----- Project Vision Icon Grid ----- */
 function ProjectVision() {
+  const { t } = useT()
   const items = [
     {
       icon: <Icon.School className="h-8 w-8" />,
-      title: 'Primary / Nursery School',
-      copy: 'Foundational, faith-anchored education for refugee and host-community children from earliest years upward.',
+      title: t('vision.school.title'),
+      copy: t('vision.school.copy'),
     },
     {
       icon: <Icon.Health className="h-8 w-8" />,
-      title: 'Health Facility',
-      copy: 'An on-site clinic delivering compassionate, dignified care to a community currently underserved by medical infrastructure.',
+      title: t('vision.health.title'),
+      copy: t('vision.health.copy'),
     },
     {
       icon: <Icon.Home className="h-8 w-8" />,
-      title: 'Agape Home for Separated Children',
-      copy: 'A safe, Christ-centred refuge providing shelter and family for children separated from their parents during displacement.',
+      title: t('vision.home.title'),
+      copy: t('vision.home.copy'),
     },
     {
       icon: <Icon.Tools className="h-8 w-8" />,
-      title: 'Vocational Center for Vulnerable Youth',
-      copy: 'Hands-on training in trades and life-skills, equipping at-risk youth to rebuild their futures with dignity and self-reliance.',
+      title: t('vision.vocational.title'),
+      copy: t('vision.vocational.copy'),
     },
     {
       icon: <Icon.Megaphone className="h-8 w-8" />,
-      title: 'Global Proclamation PA System',
-      copy: 'A reliable audio infrastructure to broadcast services, evangelism, and emergency information across the camp and beyond.',
+      title: t('vision.pa.title'),
+      copy: t('vision.pa.copy'),
     },
   ]
 
@@ -216,10 +210,10 @@ function ProjectVision() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         <div className="max-w-3xl mb-14">
           <p className="uppercase tracking-[0.3em] text-xs font-bold text-[#D4AF37] mb-5">
-            Beyond the Sanctuary
+            {t('vision.beyondSanctuary')}
           </p>
           <h2 className="font-display font-black text-4xl sm:text-5xl leading-tight text-[#0F2942]">
-            Five pillars that extend the gospel into daily life.
+            {t('vision.fivePillars')}
           </h2>
         </div>
 
@@ -247,75 +241,49 @@ function ProjectVision() {
   )
 }
 
-/* ----- Give CTA anchor section ----- */
+/* ----- Give CTA teaser (links to /give route) ----- */
 function GiveCallout() {
+  const { t } = useT()
   return (
-    <section id="give" className="bg-[#0F2942] text-white py-24 lg:py-28">
+    <section className="bg-[#0F2942] text-white py-24 lg:py-28">
       <div className="max-w-5xl mx-auto px-6 sm:px-10 text-center">
         <p className="uppercase tracking-[0.32em] text-xs font-bold text-[#D4AF37] mb-5">
-          Partner With Clinic6
+          {t('give.partnerWith')}
         </p>
         <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-tight">
-          Your gift turns prayer into permanence.
+          {t('give.giftTurnsPrayer')}
         </h2>
         <p className="mt-6 max-w-2xl mx-auto text-white/85 leading-relaxed">
-          Every contribution is received through verified Clinic6 SDA Church
-          accounts and audited by the general treasury.
+          {t('give.everyContribution')}
         </p>
-        <div className="mt-10 inline-grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/5 border border-[#D4AF37]/30 p-6 rounded-sm text-left max-w-2xl mx-auto">
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-[#D4AF37]">M-Pesa Paybill</p>
-            <p className="font-mono font-bold text-2xl mt-1">247247</p>
-          </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-[#D4AF37]">Account Number</p>
-            <p className="font-mono font-bold text-2xl mt-1">1650280005225</p>
-          </div>
-          <div className="sm:col-span-2">
-            <p className="text-[10px] uppercase tracking-widest text-[#D4AF37]">Account Name</p>
-            <p className="font-semibold text-lg mt-1">Clinic6 SDA church</p>
-          </div>
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            to="/give"
+            className="inline-flex items-center bg-[#D4AF37] text-[#0F2942] font-bold px-8 py-4 rounded-sm hover:bg-yellow-400 transition-colors uppercase tracking-widest text-sm shadow-xl"
+          >
+            {t('give.viewChannels')} →
+          </Link>
+          <Link
+            to="/seating"
+            className="inline-flex items-center border-2 border-white/80 text-white font-semibold px-8 py-4 rounded-sm hover:bg-white hover:text-[#0F2942] transition-colors uppercase tracking-widest text-sm"
+          >
+            {t('give.sponsorSeat')}
+          </Link>
         </div>
       </div>
     </section>
   )
 }
 
-/* ----- Sticky Action Bar (always visible at bottom) ----- */
-function StickyActionBar() {
-  return (
-    <div className="fixed bottom-0 inset-x-0 z-40 bg-[#0F2942] text-white border-t-2 border-[#D4AF37] shadow-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p className="text-xs sm:text-sm font-semibold tracking-wide text-center sm:text-left">
-          <span className="text-[#D4AF37] uppercase tracking-widest mr-2">Partner with Clinic6:</span>
-          Paybill <span className="font-mono font-bold">247247</span>
-          <span className="mx-2 text-white/40">|</span>
-          Acc <span className="font-mono font-bold">1650280005225</span>
-        </p>
-        <a
-          href="#give"
-          className="inline-flex items-center bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2 rounded-sm hover:bg-yellow-400 transition-colors text-xs uppercase tracking-widest"
-        >
-          Give Now →
-        </a>
-      </div>
-    </div>
-  )
-}
-
 /* ----- Page Composition ----- */
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#F7F4EF] text-[#2D3142] font-sans">
-      <Header />
+    <>
       <Hero />
       <MissionStory />
       <MissionImpactSection />
-      <SeatingSection />
       <ProjectVision />
       <GiveCallout />
-      <Footer />
-      <StickyActionBar />
-    </div>
+    </>
   )
 }

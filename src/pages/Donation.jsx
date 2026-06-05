@@ -2,6 +2,13 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Donation.css'
 
+/*
+  Legacy donation page:
+  - Preset or custom amount selection
+  - Donor details capture
+  - Payment method selection and submit simulation
+*/
+
 const Donation = () => {
   const [donationAmount, setDonationAmount] = useState('')
   const [customAmount, setCustomAmount] = useState('')
@@ -48,12 +55,14 @@ const Donation = () => {
     }
   ]
 
+  // Clicking a preset amount clears any custom amount input.
   const handleAmountClick = (amount) => {
     setSelectedAmount(amount)
     setDonationAmount(amount)
     setCustomAmount('')
   }
 
+  // Custom amount entry overrides preset selection.
   const handleCustomAmountChange = (e) => {
     const amount = e.target.value
     setCustomAmount(amount)
@@ -61,6 +70,7 @@ const Donation = () => {
     setSelectedAmount(null)
   }
 
+  // Keep donor info fields controlled and synchronized.
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setDonorInfo(prev => ({
@@ -69,6 +79,7 @@ const Donation = () => {
     }))
   }
 
+  // Lightweight frontend validation before simulated submit.
   const handleSubmit = (e) => {
     e.preventDefault()
     const finalAmount = customAmount || donationAmount
@@ -117,6 +128,7 @@ const Donation = () => {
           <div className="donation-main">
             <div className="donation-form-section">
               <form onSubmit={handleSubmit} className="donation-form">
+                {/* Amount block: choose predefined or input custom donation. */}
                 <div className="form-section">
                   <h2>Select Donation Amount</h2>
                   <div className="amount-buttons">
@@ -149,6 +161,7 @@ const Donation = () => {
                   </div>
                 </div>
 
+                {/* Donor block: contact details and optional message. */}
                 <div className="form-section">
                   <h2>Your Information</h2>
                   
@@ -191,6 +204,7 @@ const Donation = () => {
                   </div>
                 </div>
 
+                {/* Payment block: choose one payment rail. */}
                 <div className="form-section">
                   <h2>Select Payment Method</h2>
                   <div className="payment-methods">

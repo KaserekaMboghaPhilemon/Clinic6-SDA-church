@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local raw camera exports (too large for regular git history)
+src/assets/Camera Roll/
