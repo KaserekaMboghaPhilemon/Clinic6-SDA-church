@@ -20,7 +20,7 @@ export default function Footer() {
               <img
                 src={logo}
                 alt="Clinic 6 SDA Church logo"
-                className="h-20 w-20 object-cover rounded-full ring-2 ring-[#D4AF37] shadow-lg"
+                className="h-20 w-20 object-contain rounded-full bg-white p-1 ring-2 ring-[#D4AF37] shadow-lg"
               />
               <div>
                 <p className="font-display font-bold text-xl text-white leading-tight">

@@ -9,3 +9,70 @@
   body { @apply bg-sda-sand text-sda-navy font-sans antialiased; }
 }
 
+@layer utilities {
+  /* Give Now CTA: soft beacon pulse with glow to keep donation action visible. */
+  @keyframes cta-beacon {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+      background-color: #d4af37;
+      color: #0f2942;
+      box-shadow: 0 8px 16px -10px rgba(212, 175, 55, 0.7);
+    }
+    45% {
+      transform: translateY(-1px) scale(1.04);
+      background-color: #f3cd58;
+      color: #0f2942;
+      box-shadow: 0 14px 30px -10px rgba(212, 175, 55, 0.95);
+    }
+    70% {
+      background-color: #c99a1f;
+      color: #112f4a;
+      box-shadow: 0 14px 30px -10px rgba(212, 175, 55, 0.95);
+    }
+  }
+
+  /* Donate CTA: gentle call-to-action nudge distinct from the Give Now pulse. */
+  @keyframes cta-nudge {
+    0%,
+    100% {
+      transform: translateY(0);
+      background-color: #556b2f;
+      color: #f5ecd9;
+    }
+    20% {
+      transform: translateY(-2px);
+      background-color: #6f8741;
+      color: #fff6e5;
+    }
+    40% {
+      transform: translateY(0);
+      background-color: #4f642a;
+      color: #f5ecd9;
+    }
+    60% {
+      transform: translateY(-1px);
+      background-color: #7b9447;
+      color: #fff6e5;
+    }
+  }
+
+  .cta-give-pop {
+    animation: cta-beacon 2.6s ease-out infinite;
+    will-change: transform, box-shadow;
+  }
+
+  .cta-donate-pop {
+    animation: cta-nudge 2.2s ease-out infinite;
+    will-change: transform;
+  }
+
+  /* Respect reduced-motion preference while keeping the same visual style. */
+  @media (prefers-reduced-motion: reduce) {
+    .cta-give-pop,
+    .cta-donate-pop {
+      animation: none;
+    }
+  }
+}
+

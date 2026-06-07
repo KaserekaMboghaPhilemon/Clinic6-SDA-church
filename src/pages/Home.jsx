@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { GlobalReveal, GlobalRevealItem } from '../components/GlobalReveal.jsx'
 import heroImage from '../assets/image_e6151f.png'
 import stormDamageImage from '../assets/2nd-storm-wornout-building.png'
 import metalBuildImage from '../assets/assumed-for-work.png'
@@ -118,7 +119,47 @@ const homeHighlights = [
   'Urgent ask: mobilize support now before the next severe rain-and-wind cycle.',
 ]
 
+// Required milestone image path for the metal structure construction spotlight.
+const milestoneImageSrc = '/src/assets/b2093d91212795215ff70d93560a56b1 (1).jpg'
+
+const milestoneKeyFeatures = [
+  'High-grade, rust-resistant galvanized steel.',
+  'Engineered for structural stability in the Kakuma environment.',
+  'Designed for longevity and safety.',
+]
+
+// Event anchor used to describe storm timing dynamically as months/years pass.
+const STORM_EVENT_DATE = new Date(2026, 2, 1)
+
+function formatElapsedFrom(date, now = new Date()) {
+  let totalMonths = (now.getFullYear() - date.getFullYear()) * 12 + (now.getMonth() - date.getMonth())
+
+  // If the current month-day is earlier than the event day, back off one month.
+  if (now.getDate() < date.getDate()) {
+    totalMonths -= 1
+  }
+
+  const safeMonths = Math.max(totalMonths, 0)
+
+  if (safeMonths < 12) {
+    return `${safeMonths} month${safeMonths === 1 ? '' : 's'}`
+  }
+
+  const years = Math.floor(safeMonths / 12)
+  const months = safeMonths % 12
+
+  if (months === 0) {
+    return `${years} year${years === 1 ? '' : 's'}`
+  }
+
+  return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'}`
+}
+
 export default function Home() {
+  const stormElapsedLabel = formatElapsedFrom(STORM_EVENT_DATE)
+  const stormMonthLabel = STORM_EVENT_DATE.toLocaleString('en-US', { month: 'long' })
+  const stormYearLabel = STORM_EVENT_DATE.getFullYear()
+
   return (
     <div className="bg-[#F3E7CF] text-[#2F3E1E]">
       <section id="home" className="relative min-h-[88vh] overflow-hidden">
@@ -140,7 +181,7 @@ export default function Home() {
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
             <Link
               to="/give"
-              className="inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
+              className="cta-donate-pop inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
             >
               Partner With Our Mission
             </Link>
@@ -187,14 +228,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="history" className="bg-[#F3E7CF] py-16">
+      <GlobalReveal as="section" id="history" className="bg-[#F3E7CF] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <h2 className="text-3xl font-black text-[#2F3E1E] sm:text-4xl">A Faith Refined by Fire and Rain.</h2>
           <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#2F3E1E]/85">
             In 2013, four refugee families from Burundi and DRC began worshipping under a single tree in Kakuma 3. From mud
-            seats ('udongo') and branch walls ('algoropa'), we grew. Last month, dangerous desert rains destroyed our temporary
-            structure. We are now rising to build with heavy-duty metal poles and high-gauge iron—a durable sanctuary designed
-            for the Turkana sun.
+            seats ('udongo') and branch walls ('algoropa'), we grew. In {stormMonthLabel} {stormYearLabel} ({stormElapsedLabel}{' '}
+            ago), dangerous desert rains destroyed our temporary structure. We are now rising to build with heavy-duty metal
+            poles and high-gauge iron-a durable sanctuary designed for the Turkana sun.
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -224,9 +265,9 @@ export default function Home() {
             </figure>
           </div>
         </div>
-      </section>
+      </GlobalReveal>
 
-      <section id="infrastructure" className="bg-[#F8F1E2] py-16">
+      <GlobalReveal as="section" id="infrastructure" className="bg-[#F8F1E2] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-[#556B2F]">Mission Footprint</p>
           <h3 className="mt-3 text-2xl font-black text-[#1A2412] sm:text-3xl">
@@ -254,9 +295,9 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </GlobalReveal>
 
-      <section id="mission" className="bg-[#F3E7CF] py-16">
+      <GlobalReveal as="section" id="mission" className="bg-[#F3E7CF] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-[#556B2F]">Global Outreach Pillars</p>
           <h2 className="mt-3 text-3xl font-black text-[#1A2412] sm:text-4xl">Beyond the Sanctuary</h2>
@@ -264,12 +305,85 @@ export default function Home() {
             Five pillars that extend the gospel into daily life.
           </p>
 
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Project milestone block highlights the permanent metal-frame sanctuary progress. */}
+          <GlobalReveal className="mt-8 rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] p-4 sm:p-6">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#556B2F]">Project Milestone</p>
+            <h3 className="mt-2 text-2xl font-black text-[#1A2412] sm:text-3xl">Built to Endure: Our Permanent Sanctuary</h3>
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#1A2412]/85 sm:text-base">
+              By faith, we are building a structure of integrity and resilience. The heavy-duty, galvanized metal frame reflects
+              our commitment to creating a permanent, safe space for the 868 members of our community to worship and grow.
+            </p>
+
+            <figure className="mt-5 overflow-hidden rounded-lg border border-[#556B2F]/25 bg-white shadow-sm">
+              <img
+                src={milestoneImageSrc}
+                alt="Metal structure construction progress for the permanent sanctuary"
+                className="aspect-video w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.01]"
+                loading="lazy"
+                onError={(event) => {
+                  // Fallback keeps the milestone visible until the requested file is added.
+                  event.currentTarget.src = metalBuildImage
+                }}
+              />
+            </figure>
+
+            <ul className="mt-4 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[#1A2412]/88">
+              {milestoneKeyFeatures.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </GlobalReveal>
+
+          {/* Vision section pairs the planned sanctuary image with a direct partnership call-to-action. */}
+          <GlobalReveal className="mt-8 grid grid-cols-1 gap-6 rounded-2xl border border-[#556B2F]/20 bg-white p-4 sm:p-6 md:grid-cols-2 md:items-center">
+            <figure className="relative overflow-hidden rounded-lg border border-[#556B2F]/35 bg-[#F8F1E2]">
+              <img
+                src={milestoneImageSrc}
+                alt="Planned permanent dream sanctuary concept"
+                className="aspect-video w-full object-cover"
+                loading="lazy"
+                onError={(event) => {
+                  // Preserve visual continuity until the requested planned-image file is available.
+                  event.currentTarget.src = metalBuildImage
+                }}
+              />
+              <div className="absolute inset-0 bg-[#1A2412]/12" />
+              <figcaption className="absolute left-3 top-3 rounded-md border border-[#F5ECD9]/55 bg-[#1A2412]/65 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#F5ECD9]">
+                Planned Milestone
+              </figcaption>
+            </figure>
+
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#556B2F]">Vision for the Future</p>
+              <h3 className="mt-2 text-2xl font-black text-[#1A2412] sm:text-3xl">Building Our Permanent Dream</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#1A2412]/88 sm:text-base">
+                This is our vision: a permanent sanctuary built with integrity and resilience to serve every family we shepherd.
+                While this structure is currently our dream, your partnership can turn these blueprints into reality. Help us lay
+                the foundation for a space that will stand for generations.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#1A2412]/88 sm:text-base">
+                Together, we are advancing this collective mission for our 868 members and every family yet to worship here.
+              </p>
+              <Link
+                to="/give"
+                className="cta-donate-pop mt-5 inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
+              >
+                Partner With Us
+              </Link>
+            </div>
+          </GlobalReveal>
+
+          {/* Staggered reveal guides the eye through each outreach pillar card. */}
+          <GlobalReveal
+            className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            staggerChildren={0.12}
+          >
             {pillars.map((pillar) => {
               const Icon = pillar.icon
 
               return (
-                <article
+                <GlobalRevealItem
+                  as="article"
                   key={pillar.title}
                   className="group flex h-full flex-col rounded-2xl border border-[#556B2F] bg-white p-6 text-[#1A2412] shadow-sm transition-all duration-300 ease-in-out will-change-transform hover:scale-[1.02] hover:shadow-xl hover:text-[#11190d] active:scale-[0.98] cursor-pointer"
                 >
@@ -278,12 +392,12 @@ export default function Home() {
                   </div>
                   <h3 className="mt-5 text-lg font-black text-[#1A2412] transition-colors duration-300 ease-in-out group-hover:text-[#11190d]">{pillar.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-[#1A2412]/88 transition-colors duration-300 ease-in-out group-hover:text-[#11190d]">{pillar.description}</p>
-                </article>
+                </GlobalRevealItem>
               )
             })}
-          </div>
+          </GlobalReveal>
         </div>
-      </section>
+      </GlobalReveal>
 
       <footer className="border-t border-[#556B2F]/25 bg-[#E1C699] py-10">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 lg:flex-row lg:items-end lg:justify-between lg:px-10">

@@ -1,5 +1,11 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import baptismPondVideo from './assets/Camera Roll/WIN_20260602_15_32_09_Pro.mp4'
+import basinImg1 from './assets/IMG_20240824_134817_754.jpg'
+import basinImg2 from './assets/IMG_20240824_135933_897.jpg'
+import basinImg3 from './assets/IMG20240824140118_01.jpg'
+import basinImg4 from './assets/IMG_20240824_164745_756.jpg'
 
 const MotionLink = motion(Link)
 
@@ -215,6 +221,155 @@ function BentoGrid() {
 }
 
 /* ============================================================ */
+/*  2B. SACRED BASIN GALLERY                                     */
+/* ============================================================ */
+function SacredBasinGallery() {
+  // Ordered gallery data includes the exact requested filenames.
+  const basinImages = [
+    {
+      id: 'basin-1',
+      src: basinImg1,
+      fileName: 'IMG_20240824_134817_754.jpg',
+      label: 'Sacred Renewal: Full Immersion Baptism',
+    },
+    {
+      id: 'basin-2',
+      src: basinImg2,
+      fileName: 'IMG_20240824_135933_897.jpg',
+      label: 'Covenant Witness: Public Profession of Faith',
+    },
+    {
+      id: 'basin-3',
+      src: basinImg3,
+      fileName: 'IMG20240824140118_01.jpg',
+      label: 'New Life in Christ: Sacred Basin Gathering',
+    },
+    {
+      id: 'basin-4',
+      src: basinImg4,
+      fileName: 'IMG_20240824_164745_756.jpg',
+      label: 'Community Baptism: Joy at the Basin',
+    },
+    {
+      id: 'basin-5',
+      src: '/src/assets/IMG_20240824_154635_410 (1).jpg',
+      fileName: 'IMG_20240824_154635_410 (1).jpg',
+      label: 'Sacred Basin Dedication: Prayer and Commitment',
+    },
+  ]
+
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeImage = basinImages[activeIndex]
+
+  const goNext = () => {
+    setActiveIndex((prev) => (prev + 1) % basinImages.length)
+  }
+
+  const goPrev = () => {
+    setActiveIndex((prev) => (prev - 1 + basinImages.length) % basinImages.length)
+  }
+
+  // Fallback keeps gallery stable if one expected file is not yet present.
+  const handleImageFallback = (event) => {
+    event.currentTarget.src = basinImg1
+  }
+
+  return (
+    <section className="bg-[#F7F4EF] py-20 md:py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        <FadeInUp className="mb-10">
+          <p className="text-[#556B2F] uppercase tracking-[0.28em] text-xs font-semibold mb-3">
+            Sacred Basin Gallery
+          </p>
+          <h2 className="font-display font-black text-[#0F2942] text-3xl md:text-5xl leading-tight">
+            Our Sacred Basin: Dedicated Baptismal Pond
+          </h2>
+        </FadeInUp>
+
+        {/* Hero slider with fade switch and edge-mounted arrows. */}
+        <FadeInUp delay={0.08} className="relative overflow-hidden rounded-3xl border border-[#556B2F]/25 bg-black shadow-2xl">
+          <div className="relative aspect-video">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={activeImage.id}
+                src={activeImage.src}
+                alt={activeImage.label}
+                onError={handleImageFallback}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </AnimatePresence>
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/25" />
+
+            <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
+              <p className="text-white/85 text-xs uppercase tracking-[0.2em]">{activeImage.fileName}</p>
+              <h3 className="mt-2 text-white font-display text-2xl md:text-3xl font-black">
+                Our Sacred Basin: Dedicated Baptismal Pond
+              </h3>
+            </div>
+
+            <button
+              type="button"
+              onClick={goPrev}
+              aria-label="Previous sacred basin image"
+              className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-[#0F2942]/70 text-white ring-1 ring-white/30 transition hover:bg-[#0F2942]/90"
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+            <button
+              type="button"
+              onClick={goNext}
+              aria-label="Next sacred basin image"
+              className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-[#0F2942]/70 text-white ring-1 ring-white/30 transition hover:bg-[#0F2942]/90"
+            >
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </FadeInUp>
+
+        {/* Mobile-safe horizontal thumbnail strip with active border state. */}
+        <FadeInUp delay={0.12} className="mt-5 md:mt-6">
+          <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: 'thin' }}>
+            {basinImages.map((item, index) => {
+              const isActive = index === activeIndex
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={
+                    'min-w-[180px] sm:min-w-[210px] text-left rounded-2xl border bg-white p-2 md:p-2.5 transition ' +
+                    (isActive
+                      ? 'border-[#556B2F] shadow-lg'
+                      : 'border-[#556B2F]/20 hover:border-[#556B2F]/45')
+                  }
+                >
+                  <img
+                    src={item.src}
+                    alt={item.label}
+                    onError={handleImageFallback}
+                    className="w-full aspect-video rounded-xl object-cover"
+                    loading="lazy"
+                  />
+                  <p className="mt-2 text-[11px] md:text-xs font-semibold text-[#1A2412] leading-snug">
+                    {item.label}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </FadeInUp>
+      </div>
+    </section>
+  )
+}
+
+/* ============================================================ */
 /*  3. HORIZONTAL OUTREACH REEL                                  */
 /* ============================================================ */
 function OutreachReel() {
@@ -244,12 +399,13 @@ function OutreachReel() {
       alt: 'Health camp serving Kakuma residents',
     },
     {
-      title: 'Baptism by the River',
-      subtitle: 'Tarach River · 2024',
-      // TODO: /src/assets/baptism-river.mp4
-      src: '/src/assets/baptism-river.mp4',
+      title: 'many water',
+      subtitle: 'Constructed Baptismal Pond · Clinic 6 Mission Grounds',
+      // Uses a real local baptism video capture for this reel tile.
+      src: baptismPondVideo,
+      showVideo: true,
       poster: '/src/assets/baptism-river.jpg',
-      alt: 'Baptism ceremony at Tarach River',
+      alt: 'Baptism ceremony at the constructed baptismal pond',
     },
     {
       title: 'Sanctuary Build-Up',
@@ -291,13 +447,27 @@ function OutreachReel() {
               key={reel.title}
               className="group relative flex-shrink-0 snap-start w-[80vw] sm:w-[60vw] md:w-[420px] aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-white/10 hover:ring-[#D4AF37]/60 transition-all duration-500 cursor-pointer"
             >
-              {/* Poster image (video tag would also work — kept as <img> for performance) */}
-              <img
-                src={reel.poster}
-                alt={reel.alt}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-                loading="lazy"
-              />
+              {/* Baptism tile uses video playback; other tiles keep poster images for performance. */}
+              {reel.showVideo ? (
+                <video
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  poster={reel.poster}
+                  aria-label={reel.alt}
+                >
+                  <source src={reel.src} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  src={reel.poster}
+                  alt={reel.alt}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
+              )}
 
               {/* Dark vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
@@ -396,6 +566,7 @@ export default function MediaCenter() {
     <main className="bg-[#F7F4EF] text-[#2D3142]">
       <VideoHero />
       <BentoGrid />
+      <SacredBasinGallery />
       <OutreachReel />
       <StatsBanner />
       <StickyGiveWidget />

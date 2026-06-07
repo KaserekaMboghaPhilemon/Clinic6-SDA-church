@@ -14,7 +14,7 @@ export default function StickyActionBar() {
         </p>
         <Link
           to="/give"
-          className="inline-flex items-center bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2 rounded-sm hover:bg-yellow-400 transition-colors text-xs uppercase tracking-widest"
+          className="cta-give-pop inline-flex items-center bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2 rounded-sm hover:bg-yellow-400 transition-colors text-xs uppercase tracking-widest"
         >
           Give Now →
         </Link>

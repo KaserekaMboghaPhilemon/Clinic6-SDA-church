@@ -3,6 +3,7 @@ import { Link, useLocation, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from './assets/clinic6-construction-logo.jpg'
 import { useT, LANGS } from './i18n.jsx'
+import { smoothScrollToId } from './utils/smoothScroll.js'
 
 /* =================================================================
    Header.jsx — Hybrid Navigation
@@ -134,8 +135,8 @@ export default function Header({ t: tProp, currentLang: langProp, setCurrentLang
     const handleClick = (e) => {
       if (onHome) {
         e.preventDefault()
-        const el = document.getElementById(id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        // Shared scroll utility keeps motion curve identical across devices.
+        smoothScrollToId(id)
         if (onClick) onClick()
       } else if (onClick) {
         onClick()
@@ -163,18 +164,20 @@ export default function Header({ t: tProp, currentLang: langProp, setCurrentLang
       className={
         'sticky top-0 inset-x-0 z-50 transition-all duration-300 ' +
         (scrolled || !onHome
-          ? 'bg-[#0F2942]/90 backdrop-blur-md border-b border-[#D4AF37]/30 shadow-lg'
-          : 'bg-transparent backdrop-blur-0 border-b border-transparent')
+          ? 'bg-[#0F2942]/95 backdrop-blur-md border-b border-[#D4AF37]/40 shadow-2xl'
+          : 'bg-[#0F2942]/20 backdrop-blur-sm border-b border-[#D4AF37]/20')
       }
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-4 flex items-center justify-between gap-6">
+      {/* Header row uses wrapping so CTA stays visible on tight widths. */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-4 flex flex-wrap items-center justify-between gap-3 md:gap-4">
 
         {/* ── Branding (left) ── */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
+          {/* Render logo with contain + white base to keep marks and text crisp. */}
           <img
             src={logo}
             alt="Clinic 6 SDA Church logo"
-            className="h-16 w-16 lg:h-20 lg:w-20 object-cover rounded-full ring-2 ring-[#D4AF37] shadow-lg"
+            className="h-16 w-16 lg:h-20 lg:w-20 object-contain rounded-full bg-white p-1 ring-2 ring-[#D4AF37] shadow-lg"
           />
           <div className="hidden sm:flex flex-col justify-center leading-tight text-white">
             <p className="font-display font-bold text-base lg:text-lg tracking-wide drop-shadow whitespace-nowrap">
@@ -187,7 +190,8 @@ export default function Header({ t: tProp, currentLang: langProp, setCurrentLang
         </Link>
 
         {/* ── Desktop nav (centre) ── */}
-        <nav className="hidden md:flex flex-row items-center justify-center gap-6 lg:gap-8 text-sm font-medium text-white/90">
+        {/* Desktop links use horizontal gap utility for adaptive spacing control. */}
+        <nav className="hidden md:flex flex-row items-center justify-center gap-x-4 lg:gap-x-6 text-sm font-medium text-white/90">
           {anchorKeys.map((a) => (
             <AnchorLink
               key={a.id}
@@ -214,13 +218,14 @@ export default function Header({ t: tProp, currentLang: langProp, setCurrentLang
         </nav>
 
         {/* ── Give Now CTA + Language Switcher (right) ── */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="hidden md:inline-flex">
             <LangDropdown currentLang={currentLang} setCurrentLang={setCurrentLang} />
           </div>
+          {/* Keep primary CTA visible by preventing shrink under layout pressure. */}
           <Link
             to="/give"
-            className="hidden sm:inline-flex items-center whitespace-nowrap bg-[#D4AF37] text-[#0F2942] font-bold px-4 lg:px-5 py-2 lg:py-2.5 rounded-sm hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-[11px] lg:text-xs uppercase tracking-widest shadow-md font-bold"
+            className="cta-give-pop ml-auto inline-flex items-center justify-center whitespace-nowrap bg-[#D4AF37] text-[#0F2942] font-bold px-3 sm:px-5 lg:px-6 py-2 sm:py-3 lg:py-3 rounded-sm hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-[10px] sm:text-[11px] lg:text-xs uppercase tracking-widest shadow-md font-bold flex-shrink-0"
           >
             {t('nav.giveNow')} →
           </Link>
@@ -272,7 +277,7 @@ export default function Header({ t: tProp, currentLang: langProp, setCurrentLang
               <Link
                 to="/give"
                 onClick={() => setOpen(false)}
-                className="inline-flex items-center whitespace-nowrap bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2.5 rounded-sm text-xs uppercase tracking-widest"
+                className="cta-give-pop inline-flex items-center whitespace-nowrap bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2.5 rounded-sm text-xs uppercase tracking-widest"
               >
                 {t('nav.giveNow')} →
               </Link>

@@ -12,6 +12,7 @@ import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import StickyActionBar from './StickyActionBar.jsx'
 import { LanguageProvider } from './i18n.jsx'
+import { smoothScrollToId } from './utils/smoothScroll.js'
 
 /* =================================================================
    App.jsx — Router shell with Hybrid Navigation
@@ -30,8 +31,7 @@ function ScrollManager() {
       // Wait one tick so the target section is mounted, then scroll.
       const id = hash.replace('#', '')
       requestAnimationFrame(() => {
-        const el = document.getElementById(id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        smoothScrollToId(id)
       })
     } else {
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' })
@@ -65,7 +65,7 @@ function PageTransition({ children }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       {children}
     </motion.div>
@@ -149,7 +149,8 @@ export default function App() {
     <LanguageProvider>
     <BrowserRouter>
       <ScrollManager />
-      <div className="min-h-screen bg-[#F7F4EF] text-[#2D3142] font-sans pb-16">
+      {/* Prevent x-axis overflow from creating bottom scrollbar on narrow viewports. */}
+      <div className="min-h-screen overflow-x-hidden bg-[#F7F4EF] text-[#2D3142] font-sans pb-16">
         <Header />
         <AnimatedRoutes />
         <Footer />
