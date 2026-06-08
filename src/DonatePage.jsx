@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { translations } from './translations';
+import { projectCatalog } from './data/projectCatalog';
 
 /*
   DonatePage architecture:
@@ -123,14 +125,10 @@ const MAIN_SUPPORT_PROJECT = {
 };
 
 // Multiple projects donors can support in one donation.
-const PROJECT_OPTIONS = [
-  { id: 'sanctuary', name: 'Sanctuary Reconstruction' },
-  { id: 'seating', name: 'Sanctuary Seating Program' },
-  { id: 'fencing', name: 'Compound Fencing (Woven Wire Security)' },
-  { id: 'children', name: 'Children Ministry Spaces' },
-  { id: 'clinic', name: 'Community Clinic Setup' },
-  { id: 'water', name: 'Jordan Initiative Water Infrastructure' },
-];
+const PROJECT_OPTIONS = projectCatalog.map((project) => ({
+  id: project.slug,
+  name: project.title.replace(' (Urgent Priority)', ''),
+}));
 
 // UI copy fallback to avoid missing-translation rendering issues.
 const DONATE_FALLBACK_TEXT = {
@@ -241,6 +239,8 @@ function isMobile() {
 }
 
 export default function DonatePage({ currentLang = 'en' }) {
+  const location = useLocation();
+
   /* Merge language pack with defaults so missing keys never break UI text. */
   const t = useMemo(() => {
     const langPack = translations[currentLang] || {};
@@ -265,15 +265,26 @@ export default function DonatePage({ currentLang = 'en' }) {
   // Donation amount currently shown and submitted in selected currency.
   const [amount, setAmount] = useState(() => convertUsd(IMPACT_TIERS[0].usd, detectLocalCurrency()));
   // Donor can target one or multiple active support projects.
-  const [selectedProjects, setSelectedProjects] = useState(['sanctuary']);
+  const [selectedProjects, setSelectedProjects] = useState(['church-construction']);
   // USD-base live rate table fetched from remote API.
   const [exchangeRates, setExchangeRates] = useState(() => ({ USD: 1 }));
   // Active payment rail and modal feedback state.
   const [method, setMethod] = useState('mpesa');
   const [showModal, setShowModal] = useState(false);
   const [modalState, setModalState] = useState('processing');
+  const [isDonationFlowActive, setIsDonationFlowActive] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.sessionStorage.getItem('donation-flow-active') === '1';
+  });
   // Small status indicator for clipboard copy success.
   const [copied, setCopied] = useState(false);
+
+  // Holds imported budget context when donor arrives from a project detail page.
+  const [prefilledBudget, setPrefilledBudget] = useState({
+    amount: null,
+    items: [],
+    sourceProject: null,
+  });
 
   // Metadata for the currently selected currency (step, decimals, locale, etc.).
   const activeCurrency = resolveCurrencyMeta(currency, browserLocale);
@@ -305,6 +316,24 @@ export default function DonatePage({ currentLang = 'en' }) {
   const clampAmount = (value) => Math.max(minAmount, Math.min(maxAmount, value));
   const adjustAmount = (delta) => setAmount((prev) => clampAmount(prev + delta));
 
+  const searchPrefill = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    const project = params.get('project');
+    const budgetParam = params.get('budget');
+    const itemsParam = params.get('items');
+
+    const parsedAmount = budgetParam ? Number((budgetParam.match(/[\d.,]+/) || ['0'])[0].replace(/,/g, '')) : null;
+    const parsedItems = itemsParam
+      ? itemsParam.split(',').map((item) => item.trim()).filter(Boolean)
+      : [];
+
+    return {
+      project,
+      amount: Number.isFinite(parsedAmount) && parsedAmount > 0 ? parsedAmount : null,
+      items: parsedItems,
+    };
+  }, [location.search]);
+
   const toggleProject = (projectId) => {
     setSelectedProjects((prev) => {
       if (prev.includes(projectId)) {
@@ -314,6 +343,27 @@ export default function DonatePage({ currentLang = 'en' }) {
       return [...prev, projectId];
     });
   };
+
+  /* When donor enters from project detail page, preload selected project and budget context. */
+  useEffect(() => {
+    const isKnownProject = searchPrefill.project && PROJECT_OPTIONS.some((project) => project.id === searchPrefill.project);
+
+    if (!isKnownProject && !searchPrefill.amount && searchPrefill.items.length === 0) return;
+
+    if (isKnownProject) {
+      setSelectedProjects([searchPrefill.project]);
+    }
+
+    if (searchPrefill.amount) {
+      setAmount(clampAmount(searchPrefill.amount));
+    }
+
+    setPrefilledBudget({
+      amount: searchPrefill.amount,
+      items: searchPrefill.items,
+      sourceProject: isKnownProject ? searchPrefill.project : null,
+    });
+  }, [searchPrefill.project, searchPrefill.amount, searchPrefill.items, minAmount, maxAmount]);
 
   /* Fetch latest USD exchange rates once; app stays functional if offline. */
   useEffect(() => {
@@ -366,11 +416,19 @@ export default function DonatePage({ currentLang = 'en' }) {
       setCopied(true);
       setShowModal(true);
       setModalState('processing');
-      setTimeout(() => setModalState('success'), 1800);
+      setTimeout(() => {
+        setModalState('success');
+        setIsDonationFlowActive(false);
+        window.sessionStorage.removeItem('donation-flow-active');
+      }, 1800);
     } catch {
       setShowModal(true);
       setModalState('processing');
-      setTimeout(() => setModalState('success'), 1800);
+      setTimeout(() => {
+        setModalState('success');
+        setIsDonationFlowActive(false);
+        window.sessionStorage.removeItem('donation-flow-active');
+      }, 1800);
     }
   };
 
@@ -497,6 +555,27 @@ export default function DonatePage({ currentLang = 'en' }) {
             <div className="flex gap-2 mb-6">
               <div className="w-full">
                 <div className="mb-4">
+                  {prefilledBudget.sourceProject && (
+                    <div className="mb-4 rounded-xl border border-[#D4AF37]/55 bg-[#F8F1E2] px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0F2942]/65">
+                        Imported Budget Package
+                      </p>
+                      <p className="mt-1 text-sm font-black text-[#0F2942]">
+                        {PROJECT_OPTIONS.find((project) => project.id === prefilledBudget.sourceProject)?.name}
+                      </p>
+                      {prefilledBudget.amount && (
+                        <p className="mt-1 text-xs font-semibold text-[#0F2942]/85">
+                          Suggested total: {formatMoney(prefilledBudget.amount, currency)}
+                        </p>
+                      )}
+                      {prefilledBudget.items.length > 0 && (
+                        <p className="mt-2 text-xs leading-relaxed text-[#0F2942]/78">
+                          Items: {prefilledBudget.items.join(', ')}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="font-bold text-lg text-[#0F2942] mb-2">Select Projects To Support</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {PROJECT_OPTIONS.map((project) => {
@@ -734,7 +813,7 @@ export default function DonatePage({ currentLang = 'en' }) {
                   {isMobile() && (
                     <a
                       href={mpesaDeepLink}
-                      className="block mt-3 px-4 py-2 bg-[#D4AF37] text-[#0F2942] rounded font-bold text-center"
+                      className="cta-donate-pop block mt-3 px-4 py-2 bg-[#D4AF37] text-[#0F2942] rounded font-bold text-center"
                     >
                       {t.openMpesa}
                     </a>
@@ -756,7 +835,10 @@ export default function DonatePage({ currentLang = 'en' }) {
             </div>
           </div>
           <button
-            className="w-full mt-6 py-3 rounded-xl bg-[#0F2942] text-white font-bold text-lg hover:bg-[#D4AF37] hover:text-[#0F2942] transition"
+            data-cta-persist={isDonationFlowActive ? 'until-donation-complete' : undefined}
+            className={`cta-give-pop w-full mt-6 py-3 rounded-xl bg-[#0F2942] text-white font-bold text-lg hover:bg-[#D4AF37] hover:text-[#0F2942] transition ${
+              isDonationFlowActive ? '' : 'cta-is-paused'
+            }`}
             onClick={handleDonate}
           >
             {t.donateNow}

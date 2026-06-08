@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Home from './pages/Home.jsx'
 import OurStory from './pages/OurStory.jsx'
+import ProjectDetail from './pages/ProjectDetail.jsx'
 import SeatingPage from './SeatingPage.jsx'
 import DonatePage from './DonatePage.jsx'
 import MediaCenter from './MediaCenter.jsx'
@@ -96,6 +97,14 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/projects/:projectSlug"
+          element={
+            <PageTransition>
+              <ProjectDetail />
+            </PageTransition>
+          }
+        />
+        <Route
           path="/seating"
           element={
             <PageTransition>
@@ -124,14 +133,6 @@ function AnimatedRoutes() {
           }
         />
         <Route
-          path="/timeline"
-          element={
-            <PageTransition>
-              <ChurchTimeline />
-            </PageTransition>
-          }
-        />
-        <Route
           path="*"
           element={
             <PageTransition>
@@ -145,6 +146,23 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  useEffect(() => {
+    function handleCtaClick(event) {
+      const target = event.target instanceof Element ? event.target : null
+      const cta = target?.closest('.cta-give-pop, .cta-donate-pop, .donation-alert-cta')
+      if (!cta) return
+
+      if (cta.getAttribute('data-cta-persist') === 'until-donation-complete') {
+        return
+      }
+
+      cta.classList.add('cta-is-paused')
+    }
+
+    document.addEventListener('click', handleCtaClick)
+    return () => document.removeEventListener('click', handleCtaClick)
+  }, [])
+
   return (
     <LanguageProvider>
     <BrowserRouter>

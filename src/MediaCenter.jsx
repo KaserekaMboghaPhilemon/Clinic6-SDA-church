@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import baptismPondVideo from './assets/Camera Roll/WIN_20260602_15_32_09_Pro.mp4'
-import basinImg1 from './assets/IMG_20240824_134817_754.jpg'
-import basinImg2 from './assets/IMG_20240824_135933_897.jpg'
-import basinImg3 from './assets/IMG20240824140118_01.jpg'
-import basinImg4 from './assets/IMG_20240824_164745_756.jpg'
+import baptismPondVideo from './assets/first-storm.mp4'
+import basinImg1 from './assets/baptism at clinic6.jpg'
+import basinImg2 from './assets/Camera Roll/baptism at clic6 (2).jpg'
+import basinImg3 from './assets/Camera Roll/baptism at clic6 (3).jpg'
+import basinImg4 from './assets/IMG_20240824_164748_249.jpg'
 
 const MotionLink = motion(Link)
 

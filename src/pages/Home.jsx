@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { GlobalReveal, GlobalRevealItem } from '../components/GlobalReveal.jsx'
+import { useT } from '../i18n.jsx'
+import { projectCatalog } from '../data/projectCatalog.js'
 import heroImage from '../assets/image_e6151f.png'
 import stormDamageImage from '../assets/2nd-storm-wornout-building.png'
 import metalBuildImage from '../assets/assumed-for-work.png'
+import highDutyMetalImage from '../assets/high duty metal.jpg'
 
 function SchoolIcon() {
   return (
@@ -73,59 +76,53 @@ const lineageMap = [
 
 const pillars = [
   {
-    title: 'Primary/Nursery School',
+    titleKey: 'vision.school.title',
     icon: SchoolIcon,
-    description:
-      'Establishing an accredited learning environment that combines foundational academics, values formation, and child protection.',
+    descriptionKey: 'vision.school.copy',
   },
   {
-    title: 'Health Facility',
+    titleKey: 'vision.health.title',
     icon: HealthIcon,
-    description:
-      'Building a dependable care point for first-response treatment, preventive health services, and community wellness support.',
+    descriptionKey: 'vision.health.copy',
   },
   {
-    title: 'Agape Home for Separated Children',
+    titleKey: 'vision.home.title',
     icon: HomeIcon,
-    description:
-      'Providing structured shelter, pastoral care, and long-term belonging for children separated from their families.',
+    descriptionKey: 'vision.home.copy',
   },
   {
-    title: 'Vocational Center',
+    titleKey: 'vision.vocational.title',
     icon: ToolsIcon,
-    description:
-      'Delivering practical training in income-generating skills to strengthen dignity, employability, and household resilience.',
+    descriptionKey: 'vision.vocational.copy',
   },
   {
-    title: 'Global Proclamation PA System',
+    titleKey: 'vision.pa.title',
     icon: AudioIcon,
-    description:
-      'Deploying robust audio infrastructure to extend worship, teaching, and coordinated communication across the mission field.',
+    descriptionKey: 'vision.pa.copy',
   },
   {
-    title: 'Good Samaritan Feeding Program',
+    titleKey: 'vision.feeding.title',
     icon: MealIcon,
-    description:
-      'Ensuring that refugee members, who travel long distances from their homes, can remain nourished through our full-day Sabbath services, protecting them from returning to search for food in the harsh midday heat and wind.',
+    descriptionKey: 'vision.feeding.copy',
   },
 ]
 
 const homeHighlights = [
-  'Faith declaration: we receive, by faith, our permanent dream church building and steward its completion with prayer, excellence, and accountability.',
-  'Current footprint: 868 active members at Clinic 6 and 1,718+ believers reached through our lineage.',
-  'Expansion status: 3 daughter churches are active across Kalobeyei and Clinic 7.',
-  'Emergency reality: recent storm damage weakened temporary structures and raised immediate safety risks.',
-  'Rebuild plan: deploy heavy-duty metal poles and high-gauge iron for all-weather durability.',
-  'Urgent ask: mobilize support now before the next severe rain-and-wind cycle.',
+  'home.highlight.faith',
+  'home.highlight.footprint',
+  'home.highlight.expansion',
+  'home.highlight.emergency',
+  'home.highlight.rebuild',
+  'home.highlight.urgent',
 ]
 
 // Required milestone image path for the metal structure construction spotlight.
 const milestoneImageSrc = '/src/assets/b2093d91212795215ff70d93560a56b1 (1).jpg'
 
 const milestoneKeyFeatures = [
-  'High-grade, rust-resistant galvanized steel.',
-  'Engineered for structural stability in the Kakuma environment.',
-  'Designed for longevity and safety.',
+  'home.milestone.feature1',
+  'home.milestone.feature2',
+  'home.milestone.feature3',
 ]
 
 // Event anchor used to describe storm timing dynamically as months/years pass.
@@ -155,91 +152,262 @@ function formatElapsedFrom(date, now = new Date()) {
   return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'}`
 }
 
+function buildPathwayAnimationOrder(cards) {
+  if (!cards.length) {
+    return []
+  }
+
+  const sortedByTopThenLeft = [...cards].sort((a, b) => {
+    if (Math.abs(a.top - b.top) < 24) {
+      return a.left - b.left
+    }
+    return a.top - b.top
+  })
+
+  const rows = []
+  sortedByTopThenLeft.forEach((card) => {
+    const lastRow = rows[rows.length - 1]
+    if (!lastRow || Math.abs(lastRow.rowTop - card.top) > 36) {
+      rows.push({ rowTop: card.top, cards: [card] })
+      return
+    }
+    lastRow.cards.push(card)
+  })
+
+  rows.forEach((row) => {
+    row.cards.sort((a, b) => a.left - b.left)
+  })
+
+  return rows.flatMap((row, rowIndex) => {
+    if (rows.length === 2) {
+      return rowIndex === 0 ? row.cards : [...row.cards].reverse()
+    }
+
+    if (rows.length >= 3) {
+      if (rowIndex === 0 || rowIndex === 1) {
+        return row.cards
+      }
+      return rowIndex % 2 === 0 ? [...row.cards].reverse() : row.cards
+    }
+
+    return row.cards
+  })
+}
+
 export default function Home() {
+  const { t } = useT()
+  const [mainProject, ...secondaryProjects] = projectCatalog
+  const pathwaySectionRef = useRef(null)
+  const pathwayCardRefs = useRef(new Map())
+  const pathwayStepRef = useRef(0)
+  const pathwayTimerRef = useRef(null)
+  const [isPathwayInView, setIsPathwayInView] = useState(false)
+  const [activePathwayKey, setActivePathwayKey] = useState('')
   const stormElapsedLabel = formatElapsedFrom(STORM_EVENT_DATE)
   const stormMonthLabel = STORM_EVENT_DATE.toLocaleString('en-US', { month: 'long' })
   const stormYearLabel = STORM_EVENT_DATE.getFullYear()
 
+  const allPathwayKeys = useMemo(() => {
+    return [mainProject.slug, ...secondaryProjects.map((project) => project.slug)]
+  }, [mainProject.slug, secondaryProjects])
+
+  const setPathwayCardRef = useCallback((slug) => {
+    return (node) => {
+      if (node) {
+        pathwayCardRefs.current.set(slug, node)
+        return
+      }
+      pathwayCardRefs.current.delete(slug)
+    }
+  }, [])
+
+  useEffect(() => {
+    const sectionNode = pathwaySectionRef.current
+    if (!sectionNode) {
+      return
+    }
+
+    // Partial and near-full viewport thresholds both count as in-view triggers.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsPathwayInView(entry.isIntersecting && entry.intersectionRatio >= 0.14)
+      },
+      {
+        threshold: [0.14, 0.45, 0.9],
+      }
+    )
+
+    observer.observe(sectionNode)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!isPathwayInView) {
+      if (pathwayTimerRef.current) {
+        clearTimeout(pathwayTimerRef.current)
+      }
+      setActivePathwayKey('')
+      return
+    }
+
+    let cancelled = false
+
+    const runStep = () => {
+      if (cancelled) {
+        return
+      }
+
+      const viewportHeight = window.innerHeight
+      const viewportWidth = window.innerWidth
+
+      const visibleCards = allPathwayKeys
+        .map((slug) => {
+          const node = pathwayCardRefs.current.get(slug)
+          if (!node) {
+            return null
+          }
+
+          const rect = node.getBoundingClientRect()
+          const isPartiallyVisible = rect.bottom > 0 && rect.top < viewportHeight && rect.right > 0 && rect.left < viewportWidth
+          if (!isPartiallyVisible) {
+            return null
+          }
+
+          return {
+            slug,
+            top: rect.top,
+            left: rect.left,
+          }
+        })
+        .filter(Boolean)
+
+      const orderedVisibleCards = buildPathwayAnimationOrder(visibleCards)
+      if (!orderedVisibleCards.length) {
+        setActivePathwayKey('')
+        pathwayTimerRef.current = setTimeout(runStep, 5440)
+        return
+      }
+
+      const nextCard = orderedVisibleCards[pathwayStepRef.current % orderedVisibleCards.length]
+      pathwayStepRef.current += 1
+      setActivePathwayKey(nextCard.slug)
+
+      pathwayTimerRef.current = setTimeout(() => {
+        setActivePathwayKey('')
+        pathwayTimerRef.current = setTimeout(runStep, 4160)
+      }, 16000)
+    }
+
+    runStep()
+
+    return () => {
+      cancelled = true
+      if (pathwayTimerRef.current) {
+        clearTimeout(pathwayTimerRef.current)
+      }
+    }
+  }, [allPathwayKeys, isPathwayInView])
+
   return (
-    <div className="bg-[#F3E7CF] text-[#2F3E1E]">
-      <section id="home" className="relative min-h-[88vh] overflow-hidden">
+    <div className="bg-[#F7F4EF] text-[#2D3142]">
+      {/* Hero section sets campaign tone with a Pinterest-inspired editorial portrait layout. */}
+      <section id="home" className="relative min-h-[92vh] overflow-hidden bg-[#0B2F4A]">
         <img
           src={heroImage}
           alt="Clinic 6 Mother Church worship background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#041A2A]/85 via-[#0A4162]/60 to-[#041A2A]/88" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_18%,rgba(72,180,228,0.30),transparent_42%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_72%,rgba(255,255,255,0.16),transparent_38%)]" />
 
-        <div className="relative z-10 mx-auto flex min-h-[88vh] w-full max-w-7xl flex-col items-center justify-center px-5 py-20 text-center lg:px-10">
-          <h1 className="max-w-4xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-            From the Shade of a Tree to a Sanctuary of Hope.
-          </h1>
-          <p className="mt-5 max-w-3xl rounded-md border border-[#F5ECD9]/35 bg-black/25 px-4 py-3 text-sm font-semibold leading-relaxed text-[#F5ECD9]">
-            By faith, we believe God has entrusted us with a permanent dream church building, and we are committed to building it
-            with integrity, resilience, and service to every family we shepherd.
-          </p>
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
-            <Link
-              to="/give"
-              className="cta-donate-pop inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
-            >
-              Partner With Our Mission
-            </Link>
-            <Link
-              to="/our-story"
-              className="text-xs font-bold uppercase tracking-[0.18em] text-white underline-offset-4 transition hover:underline"
-            >
-              Read Our Story
-            </Link>
+        <div className="relative z-10 mx-auto grid min-h-[92vh] w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
+          {/* Left narrative panel keeps copy highly readable over the atmospheric background. */}
+          <div className="rounded-2xl border border-white/20 bg-[#041A2A]/55 p-6 text-center backdrop-blur-sm sm:p-8 lg:text-left">
+            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#F0CD59]">{t('hero.eyebrow')}</p>
+            <h1 className="mt-4 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+              {t('hero.headline')}
+            </h1>
+            <p className="mt-5 max-w-2xl text-sm font-semibold leading-relaxed text-[#ECF6FF] sm:text-base lg:max-w-none">
+              {t('hero.sub')}
+            </p>
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
+              <Link
+                to="/give"
+                className="cta-donate-pop inline-flex items-center justify-center rounded-sm bg-[#D4AF37] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#0F2942] transition hover:bg-yellow-400"
+              >
+                {t('hero.cta.give')} →
+              </Link>
+              <Link
+                to="/our-story"
+                className="cta-give-pop inline-flex items-center justify-center rounded-sm border border-white/50 px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#D4AF37]"
+              >
+                {t('hero.cta.story')}
+              </Link>
+            </div>
           </div>
+
+          {/* Right portrait frame mirrors the pin's single-subject, clean editorial visual focus. */}
+          <figure className="group relative mx-auto w-full max-w-md overflow-hidden rounded-[28px] border border-white/35 bg-[#0A2436]/40 shadow-[0_30px_70px_-25px_rgba(0,0,0,0.75)]">
+            <img
+              src={heroImage}
+              alt="Clinic 6 Mother Church worship leader in faith setting"
+              className="aspect-[4/5] w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#03121F]/62 via-transparent to-transparent" />
+            <figcaption className="absolute left-4 top-4 rounded-full border border-white/60 bg-[#04263C]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#F9E9A3]">
+              Faith Mission Spotlight
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      <section className="border-y border-[#556B2F]/20 bg-[#F8F1E2] py-5">
+      {/* Stats strip provides immediate credibility and mission scale. */}
+      <section className="border-y border-[#0F2942]/10 bg-white py-5">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-4 px-5 text-center sm:grid-cols-4 lg:px-10">
           <div>
-            <p className="text-2xl font-black text-[#2F3E1E]">868</p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#556B2F]">Members</p>
+            <p className="text-2xl font-black text-[#0F2942]">868</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#2D3142]/70">{t('stats.members')}</p>
           </div>
           <div>
-            <p className="text-2xl font-black text-[#2F3E1E]">2013</p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#556B2F]">Founded</p>
+            <p className="text-2xl font-black text-[#0F2942]">2013</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#2D3142]/70">{t('stats.founded')}</p>
           </div>
           <div>
-            <p className="text-2xl font-black text-[#2F3E1E]">3</p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#556B2F]">Daughter Churches</p>
+            <p className="text-2xl font-black text-[#0F2942]">3</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#2D3142]/70">{t('stats.daughterChurches')}</p>
           </div>
           <div>
-            <p className="text-base font-black text-[#2F3E1E]">Approved</p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#556B2F]">by Rift Valley Field</p>
+            <p className="text-base font-black text-[#0F2942]">{t('stats.approved')}</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#2D3142]/70">{t('stats.riftValleyField')}</p>
           </div>
         </div>
       </section>
 
-      <section className="bg-[#E1C699] py-10">
+      {/* Urgency block makes the current need concrete before detailed storytelling. */}
+      <section className="bg-[#F2E4C8] py-10">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#556B2F]">Mission Snapshot</p>
-          <h2 className="mt-3 text-3xl font-black text-[#1A2412] sm:text-4xl">Urgent Highlights</h2>
-          <ul className="mt-6 grid list-disc gap-3 pl-5 text-sm leading-relaxed text-[#1A2412] sm:grid-cols-2 sm:gap-x-8">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0F2942]">{t('home.snapshot')}</p>
+          <h2 className="mt-3 text-3xl font-black text-[#0F2942] sm:text-4xl">{t('home.urgentHighlights')}</h2>
+          <ul className="mt-6 grid list-disc gap-3 pl-5 text-sm leading-relaxed text-[#2D3142] sm:grid-cols-2 sm:gap-x-8">
             {homeHighlights.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item}>{t(item)}</li>
             ))}
           </ul>
         </div>
       </section>
 
-      <GlobalReveal as="section" id="history" className="bg-[#F3E7CF] py-16">
+      {/* Story section anchors nav "Our Story" and frames the storm timeline. */}
+      <GlobalReveal as="section" id="story" className="bg-[#F7F4EF] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
-          <h2 className="text-3xl font-black text-[#2F3E1E] sm:text-4xl">A Faith Refined by Fire and Rain.</h2>
-          <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#2F3E1E]/85">
-            In 2013, four refugee families from Burundi and DRC began worshipping under a single tree in Kakuma 3. From mud
-            seats ('udongo') and branch walls ('algoropa'), we grew. In {stormMonthLabel} {stormYearLabel} ({stormElapsedLabel}{' '}
-            ago), dangerous desert rains destroyed our temporary structure. We are now rising to build with heavy-duty metal
-            poles and high-gauge iron-a durable sanctuary designed for the Turkana sun.
+          <h2 className="text-3xl font-black text-[#0F2942] sm:text-4xl">{t('story.headline')}</h2>
+          <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#2D3142]/90">
+            {t('story.body1')} (<em>"udongo"</em>) {t('story.body2')} (<em>"algoropa"</em>), {t('story.body3')} {t('home.stormWhen')}{' '}
+            {stormMonthLabel} {stormYearLabel} ({stormElapsedLabel}).
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <figure className="overflow-hidden rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] shadow-sm">
+            <figure className="overflow-hidden rounded-2xl border border-[#0F2942]/15 bg-white shadow-sm">
               <img
                 src={stormDamageImage}
                 alt="2nd storm worn out building damage"
@@ -248,19 +416,19 @@ export default function Home() {
                   event.currentTarget.src = stormDamageImage
                 }}
               />
-              <figcaption className="border-t border-[#556B2F]/15 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#2F3E1E]">
-                STORM DAMAGE: 2ND-STORM-WORNOUT-BUILDING.AVIF CONTEXT
+              <figcaption className="border-t border-[#0F2942]/12 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#2D3142]">
+                {t('home.stormDamageCaption')}
               </figcaption>
             </figure>
 
-            <figure className="overflow-hidden rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] shadow-sm">
+            <figure className="overflow-hidden rounded-2xl border border-[#0F2942]/15 bg-white shadow-sm">
               <img
                 src={metalBuildImage}
                 alt="Welder and metal construction preparation"
                 className="aspect-[4/3] w-full object-cover"
               />
-              <figcaption className="border-t border-[#556B2F]/15 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#2F3E1E]">
-                TRANSITION TO DURABLE METAL-POLE CONSTRUCTION
+              <figcaption className="border-t border-[#0F2942]/12 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#2D3142]">
+                {t('home.transitionCaption')}
               </figcaption>
             </figure>
           </div>
@@ -269,9 +437,9 @@ export default function Home() {
 
       <GlobalReveal as="section" id="infrastructure" className="bg-[#F8F1E2] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#556B2F]">Mission Footprint</p>
-          <h3 className="mt-3 text-2xl font-black text-[#1A2412] sm:text-3xl">
-            1,718+ Believers reached through the Clinic 6 lineage.
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#0F2942]">{t('home.footprint')}</p>
+          <h3 className="mt-3 text-2xl font-black text-[#0F2942] sm:text-3xl">
+            {t('home.lineageReach')}
           </h3>
 
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -281,40 +449,40 @@ export default function Home() {
                 className={
                   'rounded-2xl border p-5 shadow-sm ' +
                   (index === 0
-                    ? 'border-[#556B2F]/35 bg-[#556B2F] text-[#F5ECD9] lg:col-span-2'
-                    : 'border-[#556B2F]/20 bg-white text-[#1A2412]')
+                    ? 'border-[#0F2942]/35 bg-[#0F2942] text-[#F5ECD9] lg:col-span-2'
+                    : 'border-[#0F2942]/20 bg-white text-[#0F2942]')
                 }
               >
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] opacity-75">
-                  {index === 0 ? 'Mother Church' : 'Daughter Congregation'}
+                  {index === 0 ? t('home.motherChurch') : t('home.daughterChurch')}
                 </p>
                 <h4 className="mt-2 text-lg font-black">{church.name}</h4>
                 <p className="mt-1 text-sm opacity-85">{church.location}</p>
-                <p className="mt-4 text-2xl font-black">{church.members} Members</p>
+                <p className="mt-4 text-2xl font-black">{church.members} {t('stats.members')}</p>
               </article>
             ))}
           </div>
         </div>
       </GlobalReveal>
 
-      <GlobalReveal as="section" id="mission" className="bg-[#F3E7CF] py-16">
+      {/* Mission section anchors nav "Mission" and ends with direct giving CTA. */}
+      <GlobalReveal as="section" id="impact" className="bg-[#F7F4EF] py-16">
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#556B2F]">Global Outreach Pillars</p>
-          <h2 className="mt-3 text-3xl font-black text-[#1A2412] sm:text-4xl">Beyond the Sanctuary</h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#1A2412]/85">
-            Five pillars that extend the gospel into daily life.
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#0F2942]">{t('home.outreachPillars')}</p>
+          <h2 className="mt-3 text-3xl font-black text-[#0F2942] sm:text-4xl">{t('vision.beyondSanctuary')}</h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#2D3142]/85">
+            {t('vision.fivePillars')}
           </p>
 
           {/* Project milestone block highlights the permanent metal-frame sanctuary progress. */}
-          <GlobalReveal className="mt-8 rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] p-4 sm:p-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#556B2F]">Project Milestone</p>
-            <h3 className="mt-2 text-2xl font-black text-[#1A2412] sm:text-3xl">Built to Endure: Our Permanent Sanctuary</h3>
-            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#1A2412]/85 sm:text-base">
-              By faith, we are building a structure of integrity and resilience. The heavy-duty, galvanized metal frame reflects
-              our commitment to creating a permanent, safe space for the 868 members of our community to worship and grow.
+          <GlobalReveal className="mt-8 rounded-2xl border border-[#0F2942]/20 bg-[#F8F1E2] p-4 sm:p-6">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0F2942]">{t('home.milestone')}</p>
+            <h3 className="mt-2 text-2xl font-black text-[#0F2942] sm:text-3xl">{t('home.milestoneTitle')}</h3>
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#2D3142]/88 sm:text-base">
+              {t('home.milestoneBody')}
             </p>
 
-            <figure className="mt-5 overflow-hidden rounded-lg border border-[#556B2F]/25 bg-white shadow-sm">
+            <figure className="mt-5 overflow-hidden rounded-lg border border-[#0F2942]/25 bg-white shadow-sm">
               <img
                 src={milestoneImageSrc}
                 alt="Metal structure construction progress for the permanent sanctuary"
@@ -327,16 +495,31 @@ export default function Home() {
               />
             </figure>
 
-            <ul className="mt-4 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[#1A2412]/88">
+            {/* High-duty metal reference clarifies bolt-joined durability strategy for donors. */}
+            <figure className="mt-5 overflow-hidden rounded-lg border border-[#0F2942]/25 bg-white shadow-sm">
+              <img
+                src={highDutyMetalImage}
+                alt="High-duty metal quality and bolt-joining strategy for durable sanctuary construction"
+                className="aspect-[16/10] w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.01]"
+                loading="lazy"
+              />
+              <figcaption className="border-t border-[#0F2942]/12 px-4 py-3 text-xs leading-relaxed text-[#2D3142]/88">
+                This high-duty metal reference shows the joining strategy planned for long-term durability: bolt-joined steel connections,
+                reinforced load-transfer points, and anti-rust finishing to keep the sanctuary frame stable through wind, heat, and daily use.
+                Supporting this phase means funding structure quality that protects worshippers for years, not a short-term fix.
+              </figcaption>
+            </figure>
+
+            <ul className="mt-4 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[#2D3142]/88">
               {milestoneKeyFeatures.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>{t(item)}</li>
               ))}
             </ul>
           </GlobalReveal>
 
           {/* Vision section pairs the planned sanctuary image with a direct partnership call-to-action. */}
-          <GlobalReveal className="mt-8 grid grid-cols-1 gap-6 rounded-2xl border border-[#556B2F]/20 bg-white p-4 sm:p-6 md:grid-cols-2 md:items-center">
-            <figure className="relative overflow-hidden rounded-lg border border-[#556B2F]/35 bg-[#F8F1E2]">
+          <GlobalReveal className="mt-8 grid grid-cols-1 gap-6 rounded-2xl border border-[#0F2942]/20 bg-white p-4 sm:p-6 md:grid-cols-2 md:items-center">
+            <figure className="relative overflow-hidden rounded-lg border border-[#0F2942]/35 bg-[#F8F1E2]">
               <img
                 src={milestoneImageSrc}
                 alt="Planned permanent dream sanctuary concept"
@@ -348,27 +531,25 @@ export default function Home() {
                 }}
               />
               <div className="absolute inset-0 bg-[#1A2412]/12" />
-              <figcaption className="absolute left-3 top-3 rounded-md border border-[#F5ECD9]/55 bg-[#1A2412]/65 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#F5ECD9]">
-                Planned Milestone
+              <figcaption className="absolute left-3 top-3 rounded-md border border-[#F5ECD9]/55 bg-[#0F2942]/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#F5ECD9]">
+                {t('home.plannedMilestone')}
               </figcaption>
             </figure>
 
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#556B2F]">Vision for the Future</p>
-              <h3 className="mt-2 text-2xl font-black text-[#1A2412] sm:text-3xl">Building Our Permanent Dream</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#1A2412]/88 sm:text-base">
-                This is our vision: a permanent sanctuary built with integrity and resilience to serve every family we shepherd.
-                While this structure is currently our dream, your partnership can turn these blueprints into reality. Help us lay
-                the foundation for a space that will stand for generations.
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0F2942]">{t('home.futureVision')}</p>
+              <h3 className="mt-2 text-2xl font-black text-[#0F2942] sm:text-3xl">{t('home.futureTitle')}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#2D3142]/88 sm:text-base">
+                {t('home.futureBody1')}
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-[#1A2412]/88 sm:text-base">
-                Together, we are advancing this collective mission for our 868 members and every family yet to worship here.
+              <p className="mt-2 text-sm leading-relaxed text-[#2D3142]/88 sm:text-base">
+                {t('home.futureBody2')}
               </p>
               <Link
                 to="/give"
-                className="cta-donate-pop mt-5 inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
+                className="cta-donate-pop mt-5 inline-flex items-center justify-center rounded-sm bg-[#D4AF37] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#0F2942] transition hover:bg-yellow-400"
               >
-                Partner With Us
+                {t('home.partnerWithUs')}
               </Link>
             </div>
           </GlobalReveal>
@@ -384,38 +565,132 @@ export default function Home() {
               return (
                 <GlobalRevealItem
                   as="article"
-                  key={pillar.title}
-                  className="group flex h-full flex-col rounded-2xl border border-[#556B2F] bg-white p-6 text-[#1A2412] shadow-sm transition-all duration-300 ease-in-out will-change-transform hover:scale-[1.02] hover:shadow-xl hover:text-[#11190d] active:scale-[0.98] cursor-pointer"
+                  key={pillar.titleKey}
+                  className="group flex h-full flex-col rounded-2xl border border-[#0F2942]/20 bg-white p-6 text-[#0F2942] shadow-sm transition-all duration-300 ease-in-out will-change-transform hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] cursor-pointer"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#E1C699] text-[#556B2F] transition-colors duration-300 ease-in-out group-hover:text-[#445927]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F2E4C8] text-[#0F2942] transition-colors duration-300 ease-in-out group-hover:bg-[#D4AF37]">
                     <Icon />
                   </div>
-                  <h3 className="mt-5 text-lg font-black text-[#1A2412] transition-colors duration-300 ease-in-out group-hover:text-[#11190d]">{pillar.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#1A2412]/88 transition-colors duration-300 ease-in-out group-hover:text-[#11190d]">{pillar.description}</p>
+                  <h3 className="mt-5 text-lg font-black text-[#0F2942]">{t(pillar.titleKey)}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#2D3142]/88">{t(pillar.descriptionKey)}</p>
                 </GlobalRevealItem>
               )
             })}
           </GlobalReveal>
+
+          {/* Funding priority cards link directly to dedicated project subpages. */}
+          <GlobalReveal className="mt-10 rounded-2xl border border-[#0F2942]/15 bg-white p-6 shadow-sm">
+            <div ref={pathwaySectionRef} className="pathway-cards-stage">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0F2942]/70">
+                Project Donation Pathways
+              </p>
+              <h3 className="mt-2 text-2xl font-black text-[#0F2942] sm:text-3xl">
+                Main Urgent Need: Church Construction
+              </h3>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#2D3142]/88 sm:text-base">
+                Church construction is the immediate priority for urgent donations. The following projects are also available as
+                dedicated subpages with detailed objectives, funding use, and impact goals.
+              </p>
+
+              <Link
+                to={`/projects/${mainProject.slug}`}
+                ref={setPathwayCardRef(mainProject.slug)}
+                className={`pathway-card mt-5 block rounded-2xl border p-5 shadow-xl transition hover:scale-[1.01] ${
+                  activePathwayKey === mainProject.slug
+                    ? 'pathway-card--active border-[#0F2942]/70 bg-gradient-to-br from-[#F5D77A] via-[#E3B950] to-[#C3912B] text-[#0F2942]'
+                    : 'border-[#D4AF37]/45 bg-gradient-to-br from-[#0F2942] via-[#173A5D] to-[#0F2942] text-white'
+                }`}
+              >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p
+                  className={`pathway-copy text-[11px] font-bold uppercase tracking-[0.22em] ${
+                    activePathwayKey === mainProject.slug ? 'text-[#0F2942]' : 'text-[#D4AF37]'
+                  }`}
+                >
+                  Urgent Project
+                </p>
+                <span className="rounded-full border border-white/25 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]">
+                  {mainProject.urgency}
+                </span>
+              </div>
+              <h4 className="pathway-copy mt-3 text-xl font-black sm:text-2xl">{mainProject.title}</h4>
+              <p
+                className={`pathway-copy mt-2 text-sm leading-relaxed ${
+                  activePathwayKey === mainProject.slug ? 'text-[#0F2942]/90' : 'text-white/90'
+                }`}
+              >
+                {mainProject.shortSummary}
+              </p>
+              <p
+                className={`pathway-copy mt-4 text-xs font-bold uppercase tracking-[0.2em] ${
+                  activePathwayKey === mainProject.slug ? 'text-[#0F2942]' : 'text-[#D4AF37]'
+                }`}
+              >
+                View Detailed Subpage →
+              </p>
+              </Link>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {secondaryProjects.map((project) => (
+                  <Link
+                    key={project.slug}
+                    to={`/projects/${project.slug}`}
+                    ref={setPathwayCardRef(project.slug)}
+                    className={`pathway-card rounded-xl border p-4 transition hover:border-[#D4AF37] hover:bg-white ${
+                      activePathwayKey === project.slug
+                        ? 'pathway-card--active border-[#0F2942]/45 bg-gradient-to-br from-[#FFE4A0] via-[#F6D27A] to-[#EFBF52] text-[#0F2942]'
+                        : 'border-[#0F2942]/15 bg-[#F8F1E2] text-[#0F2942]'
+                    }`}
+                  >
+                  <p
+                    className={`pathway-copy text-[10px] font-bold uppercase tracking-[0.2em] ${
+                      activePathwayKey === project.slug ? 'text-[#0F2942]' : 'text-[#0F2942]/65'
+                    }`}
+                  >
+                    {project.urgency} Priority
+                  </p>
+                  <h4 className="pathway-copy mt-2 text-base font-black leading-snug">{project.title}</h4>
+                  <p
+                    className={`pathway-copy mt-2 text-sm leading-relaxed ${
+                      activePathwayKey === project.slug ? 'text-[#0F2942]/90' : 'text-[#2D3142]/85'
+                    }`}
+                  >
+                    {project.shortSummary}
+                  </p>
+                  <p
+                    className={`pathway-copy mt-3 text-[11px] font-bold uppercase tracking-[0.18em] ${
+                      activePathwayKey === project.slug ? 'text-[#0F2942]' : 'text-[#0F2942]'
+                    }`}
+                  >
+                    Open Subpage
+                  </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </GlobalReveal>
+
+          <div className="mt-10 rounded-2xl border border-[#D4AF37]/50 bg-[#0F2942] px-6 py-8 text-white">
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#D4AF37]">{t('give.partnerWith')}</p>
+            <h3 className="mt-2 text-2xl font-black sm:text-3xl">{t('give.giftTurnsPrayer')}</h3>
+            <p className="mt-3 max-w-3xl text-sm text-white/85 sm:text-base">{t('give.everyContribution')}</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                to="/give"
+                className="inline-flex items-center justify-center rounded-sm bg-[#D4AF37] px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#0F2942] transition hover:bg-yellow-400"
+              >
+                {t('give.viewChannels')} →
+              </Link>
+              <Link
+                to="/seating"
+                className="inline-flex items-center justify-center rounded-sm border border-white/55 px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:bg-white hover:text-[#0F2942]"
+              >
+                {t('give.sponsorSeat')}
+              </Link>
+            </div>
+          </div>
         </div>
       </GlobalReveal>
-
-      <footer className="border-t border-[#556B2F]/25 bg-[#E1C699] py-10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 lg:flex-row lg:items-end lg:justify-between lg:px-10">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#556B2F]">Administrative Hierarchy</p>
-            <p className="mt-2 text-sm font-semibold text-[#1A2412]">SDA Lokichogio District · Kakuma Station · Rift Valley Field</p>
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-[#556B2F]">Tangazo la Zaka</p>
-            <p className="mt-1 text-sm font-medium text-[#1A2412]">
-              Sadaka za hiari pekee. Zaka hurejeshwa kupitia njia rasmi za Field.
-            </p>
-          </div>
-          <div className="rounded-lg border border-[#556B2F]/30 bg-[#F8F1E2] px-4 py-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#556B2F]">Paybill Details</p>
-            <p className="mt-1 text-sm font-black text-[#1A2412]">Paybill: 247247</p>
-            <p className="text-sm font-black text-[#1A2412]">Acc: 1650280005225</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -145,7 +145,7 @@ export default function OurStory() {
               </p>
               <Link
                 to="/give"
-                className="mt-6 inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-black uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
+                className="cta-donate-pop mt-6 inline-flex items-center justify-center rounded bg-[#556B2F] px-6 py-3 text-xs font-black uppercase tracking-[0.18em] text-[#F5ECD9] transition hover:bg-[#445927]"
               >
                 Partner With Our Mission
               </Link>

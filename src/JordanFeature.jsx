@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import jordanImage from "./IMG_20240824_135728_085.jpg";
 import jordanVideo from "./assets/first-storm.mp4";
+
+const jordanPoolImage = "https://i.pinimg.com/736x/55/e5/96/55e5968bf992a715ac4a1c5b0e74bff7.jpg";
 
 const JordanFeature = () => {
   return (
@@ -10,8 +11,8 @@ const JordanFeature = () => {
         <div className="space-y-5">
           <figure className="rounded-xl overflow-hidden shadow-2xl">
             <img
-              src={jordanImage}
-              alt="Baptism ceremony in a manually dug and lined pit"
+              src={jordanPoolImage}
+              alt="Dream baptism pool for Jordan construction ministry"
               className="w-full h-full object-cover"
             />
           </figure>
@@ -55,7 +56,7 @@ const JordanFeature = () => {
 
           <Link
             to="/give"
-            className="inline-flex mt-7 items-center justify-center rounded-lg bg-amber-400 px-6 py-3 text-slate-900 font-semibold shadow-lg transition-all hover:bg-amber-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className="cta-donate-pop inline-flex mt-7 items-center justify-center rounded-lg bg-amber-400 px-6 py-3 text-slate-900 font-semibold shadow-lg transition-all hover:bg-amber-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             Support Our Infrastructure
           </Link>

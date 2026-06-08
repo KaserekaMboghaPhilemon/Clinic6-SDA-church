@@ -56,7 +56,7 @@ export function SeatingSection() {
               <p className="text-sm text-slate-500 leading-relaxed mb-8">{tier.desc}</p>
               <a
                 href="#give"
-                className="block text-center w-full bg-[#0F2942] text-white font-bold py-3 rounded-lg hover:bg-[#D4AF37] hover:text-[#0F2942] transition-colors"
+                className="cta-donate-pop block text-center w-full bg-[#0F2942] text-white font-bold py-3 rounded-lg hover:bg-[#D4AF37] hover:text-[#0F2942] transition-colors"
               >
                 Sponsor Now
               </a>
