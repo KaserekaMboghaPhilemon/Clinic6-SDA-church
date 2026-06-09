@@ -113,7 +113,7 @@ export default function ProjectDetail() {
                 {isJordanBaptismPage && rollingBaptismMedia.length > 0 && (
                   <div className="mt-3 overflow-hidden rounded-xl border border-[#0F2942]/15 bg-[#F8F1E2]">
                     <div className="baptism-flow-track">
-                      {[...rollingBaptismMedia, ...rollingBaptismMedia].map((media, index) => (
+                      {rollingBaptismMedia.map((media, index) => (
                         <article
                           key={`flow-${media.src}-${index}`}
                           className="baptism-flow-card overflow-hidden rounded-lg border border-[#0F2942]/15 bg-white"

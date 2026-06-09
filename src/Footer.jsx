@@ -82,6 +82,15 @@ export default function Footer() {
                 <p className="text-[10px] uppercase tracking-widest text-[#D4AF37]">{t('footer.payment.account')}</p>
                 <p className="font-mono font-bold text-2xl text-white mt-1">1650280005225</p>
               </div>
+              <div className="bg-white/5 border border-[#D4AF37]/30 rounded-sm p-4">
+                <p className="text-[10px] uppercase tracking-widest text-[#D4AF37]">Email</p>
+                <a
+                  href="mailto:clinic6.sda.kakuma@gmail.com"
+                  className="mt-1 inline-block break-all text-sm font-semibold text-white hover:text-[#D4AF37] transition-colors"
+                >
+                  clinic6.sda.kakuma@gmail.com
+                </a>
+              </div>
               <a
                 href="#give"
                 className="inline-flex items-center bg-[#D4AF37] text-[#0F2942] font-bold px-5 py-2.5 rounded-sm hover:bg-yellow-400 transition-colors text-xs uppercase tracking-widest"
