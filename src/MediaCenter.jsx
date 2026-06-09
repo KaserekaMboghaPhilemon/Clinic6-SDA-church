@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import baptismPondVideo from './assets/first-storm.mp4'
 import basinImg1 from './assets/baptism at clinic6.jpg'
-import basinImg2 from './assets/Camera Roll/baptism at clic6 (2).jpg'
-import basinImg3 from './assets/Camera Roll/baptism at clic6 (3).jpg'
 import basinImg4 from './assets/IMG_20240824_164748_249.jpg'
 
 const MotionLink = motion(Link)
@@ -231,18 +229,6 @@ function SacredBasinGallery() {
       src: basinImg1,
       fileName: 'IMG_20240824_134817_754.jpg',
       label: 'Sacred Renewal: Full Immersion Baptism',
-    },
-    {
-      id: 'basin-2',
-      src: basinImg2,
-      fileName: 'IMG_20240824_135933_897.jpg',
-      label: 'Covenant Witness: Public Profession of Faith',
-    },
-    {
-      id: 'basin-3',
-      src: basinImg3,
-      fileName: 'IMG20240824140118_01.jpg',
-      label: 'New Life in Christ: Sacred Basin Gathering',
     },
     {
       id: 'basin-4',
