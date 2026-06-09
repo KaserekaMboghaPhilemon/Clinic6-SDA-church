@@ -14,6 +14,8 @@ const rollInViewport = {
 export default function ProjectDetail() {
   const { projectSlug } = useParams()
   const project = getProjectBySlug(projectSlug)
+  const [visibleCurrentMediaCount, setVisibleCurrentMediaCount] = useState(3)
+  const [visibleDreamMediaCount, setVisibleDreamMediaCount] = useState(3)
 
   const budgetItems = project?.budgetItems || []
   const [selectedBudgetIds, setSelectedBudgetIds] = useState(() => budgetItems.map((item) => item.id))
@@ -88,6 +90,8 @@ export default function ProjectDetail() {
         (media.src.toLowerCase().includes('baptism at clic6') || media.src.toLowerCase().includes('baptism at clinic6'))
       )
   )
+  const visibleCurrentMedia = staticCurrentMedia.slice(0, visibleCurrentMediaCount)
+  const visibleDreamMedia = (project.dreamMedia || []).slice(0, visibleDreamMediaCount)
 
   return (
     <section className="bg-[#F7F4EF] px-6 py-12 text-[#2D3142] sm:py-16">
@@ -130,7 +134,7 @@ export default function ProjectDetail() {
                 )}
 
                 <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {staticCurrentMedia.map((media, index) => (
+                  {visibleCurrentMedia.map((media, index) => (
                     <motion.article
                       key={`${media.type}-${media.src}`}
                       {...rollInViewport}
@@ -160,6 +164,17 @@ export default function ProjectDetail() {
                     </motion.article>
                   ))}
                 </div>
+                {staticCurrentMedia.length > visibleCurrentMedia.length && (
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCurrentMediaCount((count) => count + 3)}
+                      className="inline-flex items-center rounded-sm border border-[#0F2942]/25 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-[#0F2942] transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                    >
+                      Load More Current Media
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -175,7 +190,7 @@ export default function ProjectDetail() {
                       : 'md:grid-cols-2 lg:grid-cols-3'
                   }`}
                 >
-                  {project.dreamMedia.map((media, index) => {
+                  {visibleDreamMedia.map((media, index) => {
                     const isHighDutyMetal = media.src.toLowerCase().includes('high duty metal.jpg')
                     return (
                     <motion.article
@@ -224,6 +239,17 @@ export default function ProjectDetail() {
                     )
                   })}
                 </div>
+                {project.dreamMedia.length > visibleDreamMedia.length && (
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleDreamMediaCount((count) => count + 3)}
+                      className="inline-flex items-center rounded-sm border border-[#0F2942]/25 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-[#0F2942] transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                    >
+                      Load More Dream Media
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

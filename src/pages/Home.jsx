@@ -404,7 +404,12 @@ export default function Home() {
       </section>
 
       {/* Story section anchors nav "Our Story" and frames the storm timeline. */}
-      <GlobalReveal as="section" id="story" className="bg-[#F7F4EF] py-16">
+      <GlobalReveal
+        as="section"
+        id="story"
+        className="bg-[#F7F4EF] py-16"
+        style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 900px' }}
+      >
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <h2 className="text-3xl font-black text-[#0F2942] sm:text-4xl">{t('story.headline')}</h2>
           <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#2D3142]/90">
@@ -445,7 +450,12 @@ export default function Home() {
         </div>
       </GlobalReveal>
 
-      <GlobalReveal as="section" id="infrastructure" className="bg-[#F8F1E2] py-16">
+      <GlobalReveal
+        as="section"
+        id="infrastructure"
+        className="bg-[#F8F1E2] py-16"
+        style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 900px' }}
+      >
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-[#0F2942]">{t('home.footprint')}</p>
           <h3 className="mt-3 text-2xl font-black text-[#0F2942] sm:text-3xl">
@@ -476,7 +486,12 @@ export default function Home() {
       </GlobalReveal>
 
       {/* Mission section anchors nav "Mission" and ends with direct giving CTA. */}
-      <GlobalReveal as="section" id="impact" className="bg-[#F7F4EF] py-16">
+      <GlobalReveal
+        as="section"
+        id="impact"
+        className="bg-[#F7F4EF] py-16"
+        style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 1100px' }}
+      >
         <div className="mx-auto w-full max-w-7xl px-5 lg:px-10">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-[#0F2942]">{t('home.outreachPillars')}</p>
           <h2 className="mt-3 text-3xl font-black text-[#0F2942] sm:text-4xl">{t('vision.beyondSanctuary')}</h2>
