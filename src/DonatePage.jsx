@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { translations } from './translations';
 import { projectCatalog } from './data/projectCatalog';
+import { useT } from './i18n.jsx';
 
 /*
   DonatePage architecture:
@@ -238,8 +239,9 @@ function isMobile() {
   return /android|iphone|ipad|ipod|opera mini|iemobile|mobile/i.test(navigator.userAgent);
 }
 
-export default function DonatePage({ currentLang = 'en' }) {
+export default function DonatePage() {
   const location = useLocation();
+  const { lang: currentLang } = useT();
 
   /* Merge language pack with defaults so missing keys never break UI text. */
   const t = useMemo(() => {

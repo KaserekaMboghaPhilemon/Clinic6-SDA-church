@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import dreamChurchImage from "./assets/Clinic6 dream church (2).png";
+import { useT } from './i18n.jsx';
 
-export default function DonationPortal({ t, currentLang }) {
+export default function DonationPortal({ t: tProp, currentLang: langProp }) {
+  const { lang: ctxLang, t: ctxT } = useT();
+  const currentLang = langProp ?? ctxLang;
+  const t = tProp ?? ctxT;
   const [currency, setCurrency] = useState("USD"); // USD or KES
   const [billingCycle, setBillingCycle] = useState("one-time"); // one-time or monthly
   const [amount, setAmount] = useState(50);
