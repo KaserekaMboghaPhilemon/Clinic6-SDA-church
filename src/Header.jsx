@@ -26,6 +26,7 @@ const anchorKeys = [
 const routeKeys = [
   { key: 'nav.seating', to: '/seating' },
   { key: 'nav.media',   to: '/media' },
+  { key: 'nav.contact', to: '/contact' },
   { key: 'nav.donate',  to: '/give' },
 ]
 

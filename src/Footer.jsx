@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import logo from './assets/clinic6-construction-logo.jpg'
 import { useT } from './i18n.jsx'
 
@@ -97,6 +98,12 @@ export default function Footer() {
               >
                 {t('nav.giveNow')} →
               </a>
+              <Link
+                to="/contact"
+                className="inline-flex items-center text-white/90 hover:text-[#D4AF37] transition-colors text-xs uppercase tracking-widest font-semibold"
+              >
+                {t('nav.contact')} →
+              </Link>
             </div>
           </div>
         </div>

@@ -23,8 +23,23 @@ const DICT = {
     'nav.mission':     'Mission',
     'nav.seating':     'Seating',
     'nav.media':       'Media',
+    'nav.contact':     'Contact',
     'nav.donate':      'Donate',
     'nav.giveNow':     'Give Now',
+
+    'contact.eyebrow': 'Reach Out',
+    'contact.title': 'Contact Clinic 6 SDA Church',
+    'contact.subtitle':
+      'For project support, partnership, and verified giving details, connect with our church team through the channels below.',
+    'contact.channels.title': 'Direct Channels',
+    'contact.channels.emailLabel': 'Email',
+    'contact.channels.paybillLabel': 'M-Pesa Paybill',
+    'contact.channels.accountLabel': 'Account Number',
+    'contact.channels.emailCta': 'Email Us',
+    'contact.channels.giveCta': 'Go to Giving',
+    'contact.location.title': 'Location and Oversight',
+    'contact.location.body':
+      'SDA Church Clinic 6 is based in Kakuma, Turkana County, Kenya, and operates under the district and field oversight structure listed below.',
 
     'hero.eyebrow':    'Kakuma · Turkana County · Kenya',
     'hero.headline':   'From the Shade of a Tree to a Sanctuary of Hope.',
@@ -121,8 +136,23 @@ const DICT = {
     'nav.mission':    'Mission',
     'nav.seating':    'Sièges',
     'nav.media':      'Média',
+    'nav.contact':    'Contact',
     'nav.donate':     'Faire un Don',
     'nav.giveNow':    'Donner',
+
+    'contact.eyebrow': 'Nous Contacter',
+    'contact.title': 'Contacter l\'Église SDA Clinic 6',
+    'contact.subtitle':
+      'Pour le soutien des projets, les partenariats et les détails de don vérifiés, contactez notre équipe par les canaux ci-dessous.',
+    'contact.channels.title': 'Canaux Directs',
+    'contact.channels.emailLabel': 'E-mail',
+    'contact.channels.paybillLabel': 'Paybill M-Pesa',
+    'contact.channels.accountLabel': 'Numéro de Compte',
+    'contact.channels.emailCta': 'Nous Écrire',
+    'contact.channels.giveCta': 'Aller aux Dons',
+    'contact.location.title': 'Localisation et Supervision',
+    'contact.location.body':
+      'L\'église SDA Clinic 6 est basée à Kakuma, comté de Turkana, Kenya, et fonctionne sous la structure de supervision de district et de field ci-dessous.',
 
     'hero.eyebrow':   'Kakuma · Comté de Turkana · Kenya',
     'hero.headline':  "De l'Ombre d'un Arbre à un Sanctuaire d'Espérance.",
@@ -219,8 +249,23 @@ const DICT = {
     'nav.mission':    'Misheni',
     'nav.seating':    'Viti',
     'nav.media':      'Vyombo',
+    'nav.contact':    'Mawasiliano',
     'nav.donate':     'Changia',
     'nav.giveNow':    'Toa Sasa',
+
+    'contact.eyebrow': 'Wasiliana Nasi',
+    'contact.title': 'Wasiliana na Kanisa la SDA Clinic 6',
+    'contact.subtitle':
+      'Kwa usaidizi wa miradi, ushirikiano, na maelezo ya utoaji yaliyothibitishwa, wasiliana na timu ya kanisa kupitia njia zilizo hapa chini.',
+    'contact.channels.title': 'Njia za Moja kwa Moja',
+    'contact.channels.emailLabel': 'Barua Pepe',
+    'contact.channels.paybillLabel': 'M-Pesa Paybill',
+    'contact.channels.accountLabel': 'Nambari ya Akaunti',
+    'contact.channels.emailCta': 'Tutumie Barua Pepe',
+    'contact.channels.giveCta': 'Nenda Kwenye Utoaji',
+    'contact.location.title': 'Eneo na Usimamizi',
+    'contact.location.body':
+      'Kanisa la SDA Clinic 6 lipo Kakuma, Turkana County, Kenya, na linafanya kazi chini ya mfumo wa usimamizi wa district na field uliotajwa hapa chini.',
 
     'hero.eyebrow':   'Kakuma · Kaunti ya Turkana · Kenya',
     'hero.headline':  'Kutoka Kivuli cha Mti hadi Hekalu la Tumaini.',

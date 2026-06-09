@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Home from './pages/Home.jsx'
 import OurStory from './pages/OurStory.jsx'
 import ProjectDetail from './pages/ProjectDetail.jsx'
+import Contact from './pages/Contact.jsx'
 import SeatingPage from './SeatingPage.jsx'
 import DonatePage from './DonatePage.jsx'
 import MediaCenter from './MediaCenter.jsx'
@@ -117,6 +118,14 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <DonatePage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <PageTransition>
+              <Contact />
             </PageTransition>
           }
         />
