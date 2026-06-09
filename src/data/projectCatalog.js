@@ -15,11 +15,10 @@ import donateTogetherImage from '../assets/donate-together.png'
 import childrenChurchTwoImage from "../assets/children's church (2).jpg"
 import sabbathGroupElevenImage from '../assets/Sabbath school lesson groups (11).jpg'
 import dreamChurchImage from '../assets/dream-church.png'
-import baptismCameraRollTwoImage from '../assets/Camera Roll/baptism at clic6 (2).jpg'
-import baptismCameraRollThreeImage from '../assets/Camera Roll/baptism at clic6 (3).jpg'
-import baptismCameraRollFourImage from '../assets/Camera Roll/baptism at clic6 (4).jpg'
+import baptismClinicSixImage from '../assets/baptism at clinic6(6).jpg'
 import baptismClinicSevenImage from '../assets/baptism at clinic6(7).jpg'
 import baptismClinicDefaultImage from '../assets/baptism at clinic6.jpg'
+import baptismPoolSceneImage from '../assets/IMG_20240824_164748_249.jpg'
 import jordanPoolImage from '../assets/current baptism pool at structre.jpg'
 import wornoutFenceImage from '../assets/wornout face2.jpg'
 import wornoutFenceVideo from '../assets/wornout face3.mp4'
@@ -44,9 +43,9 @@ const assetMap = {
   "children's church (2).jpg": childrenChurchTwoImage,
   'Sabbath school lesson groups (11).jpg': sabbathGroupElevenImage,
   'dream-church.png': dreamChurchImage,
-  'Camera Roll/baptism at clic6 (2).jpg': baptismCameraRollTwoImage,
-  'Camera Roll/baptism at clic6 (3).jpg': baptismCameraRollThreeImage,
-  'Camera Roll/baptism at clic6 (4).jpg': baptismCameraRollFourImage,
+  'Camera Roll/baptism at clic6 (2).jpg': baptismClinicDefaultImage,
+  'Camera Roll/baptism at clic6 (3).jpg': baptismClinicSixImage,
+  'Camera Roll/baptism at clic6 (4).jpg': baptismPoolSceneImage,
   'baptism at clinic6(7).jpg': baptismClinicSevenImage,
   'current baptism pool at structre.jpg': jordanPoolImage,
   'wornout face2.jpg': wornoutFenceImage,
