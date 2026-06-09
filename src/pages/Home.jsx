@@ -316,6 +316,9 @@ export default function Home() {
         <img
           src={heroImage}
           alt="Clinic 6 Mother Church worship background"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-[#041A2A]/85 via-[#0A4162]/60 to-[#041A2A]/88" />
@@ -353,6 +356,8 @@ export default function Home() {
             <img
               src={heroImage}
               alt="Clinic 6 Mother Church worship leader in faith setting"
+              loading="eager"
+              decoding="async"
               className="aspect-[4/5] w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#03121F]/62 via-transparent to-transparent" />
@@ -412,6 +417,8 @@ export default function Home() {
               <img
                 src={stormDamageImage}
                 alt="2nd storm worn out building damage"
+                loading="lazy"
+                decoding="async"
                 className="aspect-[4/3] w-full object-cover"
                 onError={(event) => {
                   event.currentTarget.src = stormDamageImage
@@ -426,6 +433,8 @@ export default function Home() {
               <img
                 src={metalBuildImage}
                 alt="Welder and metal construction preparation"
+                loading="lazy"
+                decoding="async"
                 className="aspect-[4/3] w-full object-cover"
               />
               <figcaption className="border-t border-[#0F2942]/12 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#2D3142]">
@@ -489,6 +498,7 @@ export default function Home() {
                 alt="Metal structure construction progress for the permanent sanctuary"
                 className="aspect-video w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.01]"
                 loading="lazy"
+                decoding="async"
                 onError={(event) => {
                   // Fallback keeps the milestone visible until the requested file is added.
                   event.currentTarget.src = metalBuildImage
@@ -503,6 +513,7 @@ export default function Home() {
                 alt="High-duty metal quality and bolt-joining strategy for durable sanctuary construction"
                 className="aspect-[16/10] w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.01]"
                 loading="lazy"
+                decoding="async"
               />
               <figcaption className="border-t border-[#0F2942]/12 px-4 py-3 text-xs leading-relaxed text-[#2D3142]/88">
                 This high-duty metal reference shows the joining strategy planned for long-term durability: bolt-joined steel connections,
@@ -526,6 +537,7 @@ export default function Home() {
                 alt="Planned permanent dream sanctuary concept"
                 className="aspect-video w-full object-cover"
                 loading="lazy"
+                decoding="async"
                 onError={(event) => {
                   // Preserve visual continuity until the requested planned-image file is available.
                   event.currentTarget.src = metalBuildImage

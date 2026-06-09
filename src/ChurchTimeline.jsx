@@ -16,6 +16,7 @@ const ChurchTimeline = () => {
               <video
                 className="w-full h-full object-cover"
                 controls
+                preload="metadata"
               >
                 <source src={firstStormVideo} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -41,6 +42,8 @@ const ChurchTimeline = () => {
                 src={secondStormImage}
                 alt="Second storm structural damage"
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 

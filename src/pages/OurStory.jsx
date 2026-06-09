@@ -18,6 +18,9 @@ export default function OurStory() {
         <img
           src={genesisImage}
           alt="Original worship site under the tree in Kakuma 3"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-[#1D2713]/55" />
@@ -78,7 +81,7 @@ export default function OurStory() {
             </section>
 
             <figure className="overflow-hidden rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] shadow-sm">
-              <img src={lineageVisual} alt="Lineage map showing the reach of the Clinic 6 mission" className="h-64 w-full object-cover sm:h-72" />
+              <img src={lineageVisual} alt="Lineage map showing the reach of the Clinic 6 mission" className="h-64 w-full object-cover sm:h-72" loading="lazy" decoding="async" />
               <figcaption className="border-t border-[#556B2F]/15 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#32461B]">
                 Lineage Map: A Growing Network Of Hope
               </figcaption>
@@ -114,7 +117,7 @@ export default function OurStory() {
                 our community always have a safe, dignified place to gather.
               </p>
               <figure className="overflow-hidden rounded-2xl border border-[#556B2F]/20 bg-[#F8F1E2] shadow-sm">
-                <img src={stormDamageImage} alt="Storm damage to temporary church structure" className="h-64 w-full object-cover sm:h-72" />
+                <img src={stormDamageImage} alt="Storm damage to temporary church structure" className="h-64 w-full object-cover sm:h-72" loading="lazy" decoding="async" />
               </figure>
             </section>
 
