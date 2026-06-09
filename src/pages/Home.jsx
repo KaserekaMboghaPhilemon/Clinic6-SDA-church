@@ -7,6 +7,7 @@ import heroImage from '../assets/image_e6151f.png'
 import stormDamageImage from '../assets/2nd-storm-wornout-building.png'
 import metalBuildImage from '../assets/assumed-for-work.png'
 import highDutyMetalImage from '../assets/high duty metal.jpg'
+import milestoneImage from '../assets/b2093d91212795215ff70d93560a56b1 (1).jpg'
 
 function SchoolIcon() {
   return (
@@ -117,7 +118,7 @@ const homeHighlights = [
 ]
 
 // Required milestone image path for the metal structure construction spotlight.
-const milestoneImageSrc = '/src/assets/b2093d91212795215ff70d93560a56b1 (1).jpg'
+const milestoneImageSrc = milestoneImage
 
 const milestoneKeyFeatures = [
   'home.milestone.feature1',

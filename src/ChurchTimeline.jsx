@@ -16,12 +16,8 @@ const ChurchTimeline = () => {
               <video
                 className="w-full h-full object-cover"
                 controls
-                onError={(e) => {
-                  e.currentTarget.src = firstStormVideo;
-                  e.currentTarget.load();
-                }}
               >
-                <source src="VID-20260227-WA0016_2.mp4" type="video/mp4" />
+                <source src={firstStormVideo} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -42,12 +38,9 @@ const ChurchTimeline = () => {
           <article className="bg-white rounded-xl shadow-md p-4 md:p-6">
             <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-slate-200">
               <img
-                src="Gemini_Generated_Image_v53ni9v53ni9v53n.png"
+                src={secondStormImage}
                 alt="Second storm structural damage"
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = secondStormImage;
-                }}
               />
             </div>
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import dreamChurchImage from "./assets/Clinic6 dream church (2).png";
 
 export default function DonationPortal({ t, currentLang }) {
   const [currency, setCurrency] = useState("USD"); // USD or KES
@@ -45,7 +46,7 @@ export default function DonationPortal({ t, currentLang }) {
   return (
     <section id="donate" className="relative min-h-screen bg-[#F7F4EF] py-24 px-4 md:px-12 flex items-center justify-center overflow-hidden">
       {/* Blurred Architectural Watermark Accent */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-center bg-cover bg-no-repeat" style={{ backgroundImage: `url('./assets/Clinic6 dream church (2).png')` }} />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-center bg-cover bg-no-repeat" style={{ backgroundImage: `url(${dreamChurchImage})` }} />
 
       <div className="w-full max-w-7xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden relative z-10 grid grid-cols-1 lg:grid-cols-12">
         

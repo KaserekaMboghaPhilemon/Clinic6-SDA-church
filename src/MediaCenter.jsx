@@ -3,7 +3,23 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import baptismPondVideo from './assets/first-storm.mp4'
 import basinImg1 from './assets/baptism at clinic6.jpg'
+import basinImg5 from './assets/baptism at clinic6(6).jpg'
 import basinImg4 from './assets/IMG_20240824_164748_249.jpg'
+import choirWorshipPoster from './assets/church-affected1.jpeg'
+import childrenChurchImg from "./assets/children's church (1).jpg"
+import lessonsImg from './assets/Sabbath school lesson groups (5).jpg'
+import sabbathSchoolImg from './assets/Sabbath school lesson groups (8).jpg'
+import childrenSingingImg from "./assets/children's church (3).jpg"
+import youthBibleImg from "./assets/children's church (2).jpg"
+import outreachFoodVideo from './assets/sabbath-school-groups (5).mp4'
+import outreachFoodPoster from './assets/Sabbath school lesson groups (10).jpg'
+import choirProclamationVideo from './assets/sabbath-school-groups (6).mp4'
+import choirProclamationPoster from './assets/Sabbath school lesson groups (11).jpg'
+import healthClinicVideo from './assets/sabbath-school-groups (7).mp4'
+import healthClinicPoster from './assets/Sabbath school lesson groups (12).jpg'
+import baptismRiverPoster from './assets/current baptism pool at structre.jpg'
+import constructionVideo from './assets/Clinic6 dream church.mp4'
+import constructionPoster from './assets/dream-church1.png'
 
 const MotionLink = motion(Link)
 
@@ -52,19 +68,17 @@ function VideoHero() {
       id="media-hero"
       className="relative w-full h-[70vh] min-h-[520px] overflow-hidden bg-[#0F2942]"
     >
-      {/* Background looping worship video.
-          TODO: place file at  → /src/assets/choir-worship-loop.mp4
-          (or /public/media/choir-worship-loop.mp4 and update src below) */}
+      {/* Background looping worship video. */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
         autoPlay
         loop
         muted
         playsInline
-        poster="/src/assets/choir-worship-poster.jpg"
+        poster={choirWorshipPoster}
         aria-label="Clinic 6 SDA choir leading worship in Kakuma"
       >
-        <source src="/src/assets/choir-worship-loop.mp4" type="video/mp4" />
+        <source src={baptismPondVideo} type="video/mp4" />
       </video>
 
       {/* Gradient overlay for legibility */}
@@ -121,40 +135,35 @@ function BentoGrid() {
   /* Five tiles — asymmetric grid laid out on a 4-col × 6-row canvas */
   const tiles = [
     {
-      // TODO: /src/assets/children-church.jpg
-      src: '/src/assets/children-church.jpg',
+      src: childrenChurchImg,
       alt: 'Clinic 6 children gathered for Sabbath worship',
       label: 'Children of the Promise',
       span: 'md:col-span-2 md:row-span-4',  // large hero tile
       aspect: '',
     },
     {
-      // TODO: /src/assets/lessons.jpg
-      src: '/src/assets/lessons.jpg',
+      src: lessonsImg,
       alt: 'Sabbath school lesson study at Clinic 6',
       label: 'Daily Lessons',
       span: 'md:col-span-2 md:row-span-2',  // wide top-right
       aspect: '',
     },
     {
-      // TODO: /src/assets/sabbath-school.jpg
-      src: '/src/assets/sabbath-school.jpg',
+      src: sabbathSchoolImg,
       alt: 'Sabbath school children singing together',
       label: 'Sabbath School',
       span: 'md:col-span-1 md:row-span-2',
       aspect: 'aspect-square',
     },
     {
-      // TODO: /src/assets/children-singing.jpg
-      src: '/src/assets/children-singing.jpg',
+      src: childrenSingingImg,
       alt: 'Children choir performing in the sanctuary',
       label: 'Voices of Tomorrow',
       span: 'md:col-span-1 md:row-span-2',
       aspect: 'aspect-square',
     },
     {
-      // TODO: /src/assets/youth-bible.jpg
-      src: '/src/assets/youth-bible.jpg',
+      src: youthBibleImg,
       alt: 'Youth holding Bibles after a service at Clinic 6',
       label: 'Discipling the Next Generation',
       span: 'md:col-span-4 md:row-span-2',  // full-width banner row
@@ -238,8 +247,8 @@ function SacredBasinGallery() {
     },
     {
       id: 'basin-5',
-      src: '/src/assets/IMG_20240824_154635_410 (1).jpg',
-      fileName: 'IMG_20240824_154635_410 (1).jpg',
+      src: basinImg5,
+      fileName: 'baptism at clinic6(6).jpg',
       label: 'Sacred Basin Dedication: Prayer and Commitment',
     },
   ]
@@ -363,25 +372,22 @@ function OutreachReel() {
     {
       title: 'Community Food Outreach',
       subtitle: 'Kakuma Sector 3 · 2025',
-      // TODO: /src/assets/outreach-food.mp4  (poster: outreach-food.jpg)
-      src: '/src/assets/outreach-food.mp4',
-      poster: '/src/assets/outreach-food.jpg',
+      src: outreachFoodVideo,
+      poster: outreachFoodPoster,
       alt: 'Volunteers distributing food parcels at Clinic 6 outreach',
     },
     {
       title: 'Choir Proclamation',
       subtitle: '868 Voices · Live',
-      // TODO: /src/assets/choir-proclamation.mp4
-      src: '/src/assets/choir-proclamation.mp4',
-      poster: '/src/assets/choir-proclamation.jpg',
+      src: choirProclamationVideo,
+      poster: choirProclamationPoster,
       alt: 'Clinic 6 choir proclaiming the gospel in song',
     },
     {
       title: 'Health Clinic Service',
       subtitle: 'Free Medical Camp',
-      // TODO: /src/assets/health-clinic.mp4
-      src: '/src/assets/health-clinic.mp4',
-      poster: '/src/assets/health-clinic.jpg',
+      src: healthClinicVideo,
+      poster: healthClinicPoster,
       alt: 'Health camp serving Kakuma residents',
     },
     {
@@ -390,15 +396,14 @@ function OutreachReel() {
       // Uses a real local baptism video capture for this reel tile.
       src: baptismPondVideo,
       showVideo: true,
-      poster: '/src/assets/baptism-river.jpg',
+      poster: baptismRiverPoster,
       alt: 'Baptism ceremony at the constructed baptismal pond',
     },
     {
       title: 'Sanctuary Build-Up',
       subtitle: 'Construction Progress',
-      // TODO: /src/assets/construction.mp4
-      src: '/src/assets/construction.mp4',
-      poster: '/src/assets/construction.jpg',
+      src: constructionVideo,
+      poster: constructionPoster,
       alt: 'Ongoing construction of the Clinic 6 sanctuary',
     },
   ]

@@ -1,4 +1,74 @@
-export const projectCatalog = [
+import churchAffectedImage from '../assets/church-affected1.jpeg'
+import secondStormImage from '../assets/2nd-storm-wornout-building.png'
+import firstStormVideo from '../assets/first-storm.mp4'
+import highDutyMetalImage from '../assets/high duty metal.jpg'
+import clinicDreamImage from '../assets/Clinic6 dream church (2).png'
+import dreamChurchOneImage from '../assets/dream-church1.png'
+import clinicDreamVideo from '../assets/Clinic6 dream church.mp4'
+import childrenChurchOneImage from "../assets/children's church (1).jpg"
+import childrenChurchVideoOne from "../assets/children's church video (1).mp4"
+import childrenChurchThreeImage from "../assets/children's church (3).jpg"
+import childrenChurchVideoTwo from "../assets/children's church video (2).mp4"
+import sabbathGroupFiveImage from '../assets/Sabbath school lesson groups (5).jpg'
+import sabbathGroupEightImage from '../assets/Sabbath school lesson groups (8).jpg'
+import donateTogetherImage from '../assets/donate-together.png'
+import childrenChurchTwoImage from "../assets/children's church (2).jpg"
+import sabbathGroupElevenImage from '../assets/Sabbath school lesson groups (11).jpg'
+import dreamChurchImage from '../assets/dream-church.png'
+import baptismClinicSevenImage from '../assets/baptism at clinic6(7).jpg'
+import baptismClinicDefaultImage from '../assets/baptism at clinic6.jpg'
+import jordanPoolImage from '../assets/current baptism pool at structre.jpg'
+import wornoutFenceImage from '../assets/wornout face2.jpg'
+import wornoutFenceVideo from '../assets/wornout face3.mp4'
+import durableFenceImage from '../assets/durable webed wire face.jpg'
+import durableFenceTwoImage from '../assets/durable webed wire face2.jpg'
+
+const assetMap = {
+  'church-affected1.jpeg': churchAffectedImage,
+  '2nd-storm-wornout-building.png': secondStormImage,
+  'first-storm.mp4': firstStormVideo,
+  'high duty metal.jpg': highDutyMetalImage,
+  'Clinic6 dream church (2).png': clinicDreamImage,
+  'dream-church1.png': dreamChurchOneImage,
+  'Clinic6 dream church.mp4': clinicDreamVideo,
+  "children's church (1).jpg": childrenChurchOneImage,
+  "children's church video (1).mp4": childrenChurchVideoOne,
+  "children's church (3).jpg": childrenChurchThreeImage,
+  "children's church video (2).mp4": childrenChurchVideoTwo,
+  'Sabbath school lesson groups (5).jpg': sabbathGroupFiveImage,
+  'Sabbath school lesson groups (8).jpg': sabbathGroupEightImage,
+  'donate-together.png': donateTogetherImage,
+  "children's church (2).jpg": childrenChurchTwoImage,
+  'Sabbath school lesson groups (11).jpg': sabbathGroupElevenImage,
+  'dream-church.png': dreamChurchImage,
+  'baptism at clinic6(7).jpg': baptismClinicSevenImage,
+  'current baptism pool at structre.jpg': jordanPoolImage,
+  'wornout face2.jpg': wornoutFenceImage,
+  'wornout face3.mp4': wornoutFenceVideo,
+  'durable webed wire face.jpg': durableFenceImage,
+  'durable webed wire face2.jpg': durableFenceTwoImage,
+}
+
+function resolveAssetPath(src, type) {
+  if (!src || !src.startsWith('/src/assets/')) {
+    return src
+  }
+
+  const fileName = src.replace('/src/assets/', '')
+  const resolved = assetMap[fileName]
+
+  if (resolved) {
+    return resolved
+  }
+
+  if (type === 'video') {
+    return firstStormVideo
+  }
+
+  return baptismClinicDefaultImage
+}
+
+const rawProjectCatalog = [
   {
     slug: 'church-construction',
     title: 'Church Construction (Urgent Priority)',
@@ -570,6 +640,18 @@ export const projectCatalog = [
     ],
   },
 ]
+
+export const projectCatalog = rawProjectCatalog.map((project) => ({
+  ...project,
+  currentMedia: (project.currentMedia || []).map((media) => ({
+    ...media,
+    src: resolveAssetPath(media.src, media.type),
+  })),
+  dreamMedia: (project.dreamMedia || []).map((media) => ({
+    ...media,
+    src: resolveAssetPath(media.src, media.type),
+  })),
+}))
 
 export function getProjectBySlug(projectSlug) {
   return projectCatalog.find((project) => project.slug === projectSlug)
