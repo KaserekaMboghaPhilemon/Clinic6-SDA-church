@@ -50,22 +50,17 @@ const assetMap = {
   "wornout face2.jpg": wornoutFenceImage,
   "durable webed wire face.jpg": durableFenceImage,
   "durable webed wire face2.jpg": durableFenceTwoImage,
-      {
-        type: 'image',
-        src: '/src/assets/high duty metal.jpg',
-        alt: 'High-duty metal and reinforcement materials',
-        illustration:
-          'Reference image showing high-duty metal intended for reinforced frame joins and improved sanctuary durability.',
-      },
+};
+
+export function resolveAssetPath(src, type) {
+  if (!src || typeof src !== "string") return baptismClinicDefaultImage;
   const fileName = src.replace("/src/assets/", "");
   const resolved = assetMap[fileName];
 
-  if (resolved) {
-    return resolved;
-  }
+  if (resolved) return resolved;
 
   if (type === "video") {
-    // Return a safe image fallback for video placeholders so bundling doesn't require local mp4 files
+    // fallback to a poster image when a video file isn't bundled
     return baptismClinicDefaultImage;
   }
 
