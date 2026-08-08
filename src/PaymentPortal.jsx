@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 /* ============================================================ */
 /*  PaymentPortal.jsx                                            */
@@ -8,52 +8,85 @@ import { AnimatePresence } from 'framer-motion'
 /* ============================================================ */
 
 /* ---------- Tiny inline icon set ---------- */
-const CopyIcon = ({ className = 'w-4 h-4' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-       strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+const CopyIcon = ({ className = "w-4 h-4" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
     <rect x="9" y="9" width="13" height="13" rx="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </svg>
-)
-const CheckIcon = ({ className = 'w-4 h-4' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-       strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+);
+const CheckIcon = ({ className = "w-4 h-4" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="3"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
     <polyline points="20 6 9 17 4 12" />
   </svg>
-)
-const AlertIcon = ({ className = 'w-5 h-5' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-       strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+);
+const AlertIcon = ({ className = "w-5 h-5" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
     <circle cx="12" cy="12" r="10" />
     <line x1="12" y1="8" x2="12" y2="13" />
     <line x1="12" y1="16.5" x2="12" y2="16.5" />
   </svg>
-)
-const LockIcon = ({ className = 'w-4 h-4' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-       strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+);
+const LockIcon = ({ className = "w-4 h-4" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
     <rect x="4" y="11" width="16" height="10" rx="2" />
     <path d="M8 11V7a4 4 0 0 1 8 0v4" />
   </svg>
-)
+);
 
 /* ---------- Reusable: copyable number row ---------- */
-function CopyChip({ label, value, size = 'lg' }) {
-  const [copied, setCopied] = useState(false)
+function CopyChip({ label, value, size = "lg" }) {
+  const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard may be blocked — silently ignore */
     }
-  }
-  const valSize = size === 'xl'
-    ? 'text-4xl md:text-5xl'
-    : size === 'lg'
-      ? 'text-2xl md:text-3xl'
-      : 'text-xl'
+  };
+  const valSize =
+    size === "xl"
+      ? "text-4xl md:text-5xl"
+      : size === "lg"
+        ? "text-2xl md:text-3xl"
+        : "text-xl";
   return (
     <button
       type="button"
@@ -65,7 +98,9 @@ function CopyChip({ label, value, size = 'lg' }) {
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#0F2942]/60 font-semibold">
           {label}
         </p>
-        <p className={`font-display font-black text-[#0F2942] leading-none mt-2 truncate ${valSize}`}>
+        <p
+          className={`font-display font-black text-[#0F2942] leading-none mt-2 truncate ${valSize}`}
+        >
           <AnimatePresence mode="wait" initial={false}>
             {copied ? (
               <motion.span
@@ -94,17 +129,21 @@ function CopyChip({ label, value, size = 'lg' }) {
       </div>
       <span
         className={
-          'shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ' +
+          "shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all " +
           (copied
-            ? 'bg-[#D4AF37] text-[#0F2942]'
-            : 'bg-[#0F2942] text-white group-hover:bg-[#D4AF37] group-hover:text-[#0F2942]')
+            ? "bg-[#D4AF37] text-[#0F2942]"
+            : "bg-[#0F2942] text-white group-hover:bg-[#D4AF37] group-hover:text-[#0F2942]")
         }
       >
-        {copied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
-        {copied ? 'Copied' : 'Copy'}
+        {copied ? (
+          <CheckIcon className="w-3.5 h-3.5" />
+        ) : (
+          <CopyIcon className="w-3.5 h-3.5" />
+        )}
+        {copied ? "Copied" : "Copy"}
       </span>
     </button>
-  )
+  );
 }
 
 /* ---------- Read-only detail row ---------- */
@@ -118,15 +157,15 @@ function DetailRow({ label, value }) {
         {value}
       </span>
     </div>
-  )
+  );
 }
 
 /* ---------- Tabs config ---------- */
 const TABS = [
-  { id: 'mpesa',  label: 'M-Pesa',        sub: 'East Africa' },
-  { id: 'bank',   label: 'Regional Bank', sub: 'Equity · Lokichogio' },
-  { id: 'global', label: 'Global Wire',   sub: 'SWIFT · International' },
-]
+  { id: "mpesa", label: "M-Pesa", sub: "East Africa" },
+  { id: "bank", label: "Regional Bank", sub: "Equity · Lokichogio" },
+  { id: "global", label: "Global Wire", sub: "SWIFT · International" },
+];
 
 /* ============================================================ */
 /*  TAB PANELS                                                   */
@@ -134,12 +173,12 @@ const TABS = [
 
 function MpesaPanel() {
   const steps = [
-    'Open the M-Pesa menu on your phone.',
-    'Tap Lipa na M-Pesa → Pay Bill.',
-    'Enter Business Number 247247.',
-    'Enter Account Number 1650280005225.',
-    'Confirm the amount and authorise with your PIN.',
-  ]
+    "Open the M-Pesa menu on your phone.",
+    "Tap Lipa na M-Pesa → Pay Bill.",
+    "Enter Business Number 247247.",
+    "Enter Account Number 105225.",
+    "Confirm the amount and authorise with your PIN.",
+  ];
   return (
     <div className="space-y-6">
       {/* Brand tag */}
@@ -155,11 +194,14 @@ function MpesaPanel() {
 
       {/* Big numbers */}
       <div className="grid sm:grid-cols-2 gap-3">
-        <CopyChip label="Paybill / Business No." value="247247"        size="xl" />
-        <CopyChip label="Account Number"          value="1650280005225" size="lg" />
+        <CopyChip label="Paybill / Business No." value="247247" size="xl" />
+        <CopyChip label="Account Number" value="105225" size="lg" />
       </div>
 
-      <DetailRow label="Account Name" value="Clinic6 SDA Church" />
+      <DetailRow
+        label="Account Name"
+        value="SEVENTH DAY ADVENTIST CHURCH EAST AFRICAN UNION CLINIC SIX KAKUMA"
+      />
 
       {/* Numbered step list */}
       <div>
@@ -180,7 +222,7 @@ function MpesaPanel() {
         </ol>
       </div>
     </div>
-  )
+  );
 }
 
 function BankPanel() {
@@ -206,10 +248,13 @@ function BankPanel() {
       </div>
 
       <div className="bg-[#F7F4EF] border border-[#0F2942]/10 rounded-2xl overflow-hidden">
-        <DetailRow label="Bank"         value="Equity Bank Kenya Ltd." />
-        <DetailRow label="Branch"       value="Lokichogio Branch" />
-        <DetailRow label="Account Name" value="Clinic6 SDA Church" />
-        <DetailRow label="Reference"    value="Use 'SEATS' as narrative" />
+        <DetailRow label="Bank" value="Equity Bank Kenya Limited" />
+        <DetailRow label="Branch" value="Lokichogio Branch" />
+        <DetailRow
+          label="Account Name"
+          value="SEVENTH DAY ADVENTIST CHURCH EAST AFRICAN UNION CLINIC SIX KAKUMA"
+        />
+        <DetailRow label="Reference" value="Use 'SEATS' as narrative" />
       </div>
 
       <p className="text-xs text-[#0F2942]/60 leading-relaxed">
@@ -217,7 +262,7 @@ function BankPanel() {
         Please keep your transaction slip for stewardship records.
       </p>
     </div>
-  )
+  );
 }
 
 function GlobalPanel() {
@@ -235,11 +280,14 @@ function GlobalPanel() {
       <CopyChip label="SWIFT Code" value="EQBLKENAXXX" size="xl" />
 
       <div className="bg-[#F7F4EF] border border-[#0F2942]/10 rounded-2xl overflow-hidden">
-        <DetailRow label="Beneficiary Bank"    value="Equity Bank Kenya Ltd." />
-        <DetailRow label="Branch"              value="Lokichogio · Turkana, Kenya" />
+        <DetailRow label="Beneficiary Bank" value="Equity Bank Kenya Limited" />
+        <DetailRow label="Branch" value="Lokichogio · Turkana, Kenya" />
         <DetailRow label="Beneficiary Account" value="1650280005225" />
-        <DetailRow label="Beneficiary Name"    value="Clinic6 SDA Church" />
-        <DetailRow label="Intermediary"        value="Equity Direct" />
+        <DetailRow
+          label="Beneficiary Name"
+          value="SEVENTH DAY ADVENTIST CHURCH EAST AFRICAN UNION CLINIC SIX KAKUMA"
+        />
+        <DetailRow label="Intermediary" value="Equity Direct" />
       </div>
 
       <div className="flex items-start gap-3 bg-[#0F2942] text-white rounded-2xl px-5 py-4">
@@ -251,14 +299,14 @@ function GlobalPanel() {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 /* ============================================================ */
 /*  MAIN                                                         */
 /* ============================================================ */
 export default function PaymentPortal() {
-  const [active, setActive] = useState('mpesa')
+  const [active, setActive] = useState("mpesa");
 
   return (
     <section className="bg-[#F7F4EF] text-[#0F2942] py-20 md:py-28 px-6">
@@ -273,7 +321,8 @@ export default function PaymentPortal() {
             Give to <span className="italic text-[#D4AF37]">Clinic 6</span>.
           </h1>
           <p className="mt-4 text-[#0F2942]/65 text-base md:text-lg max-w-xl mx-auto">
-            Choose your preferred method — every shilling builds a seat in the sanctuary.
+            Choose your preferred method — every shilling builds a seat in the
+            sanctuary.
           </p>
         </div>
 
@@ -282,10 +331,13 @@ export default function PaymentPortal() {
           <div className="h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
 
           {/* Tabs with sliding underline */}
-          <div role="tablist" aria-label="Payment method"
-               className="relative grid grid-cols-3 border-b border-[#0F2942]/10">
+          <div
+            role="tablist"
+            aria-label="Payment method"
+            className="relative grid grid-cols-3 border-b border-[#0F2942]/10"
+          >
             {TABS.map((t) => {
-              const isActive = active === t.id
+              const isActive = active === t.id;
               return (
                 <button
                   key={t.id}
@@ -296,16 +348,18 @@ export default function PaymentPortal() {
                 >
                   <span
                     className={
-                      'block font-display font-bold text-sm md:text-base transition-colors ' +
-                      (isActive ? 'text-[#0F2942]' : 'text-[#0F2942]/45 group-hover:text-[#0F2942]/75')
+                      "block font-display font-bold text-sm md:text-base transition-colors " +
+                      (isActive
+                        ? "text-[#0F2942]"
+                        : "text-[#0F2942]/45 group-hover:text-[#0F2942]/75")
                     }
                   >
                     {t.label}
                   </span>
                   <span
                     className={
-                      'block text-[10px] uppercase tracking-[0.22em] mt-1 transition-colors ' +
-                      (isActive ? 'text-[#D4AF37]' : 'text-[#0F2942]/35')
+                      "block text-[10px] uppercase tracking-[0.22em] mt-1 transition-colors " +
+                      (isActive ? "text-[#D4AF37]" : "text-[#0F2942]/35")
                     }
                   >
                     {t.sub}
@@ -315,11 +369,15 @@ export default function PaymentPortal() {
                     <motion.span
                       layoutId="portal-tab-underline"
                       className="absolute left-4 right-4 -bottom-px h-[3px] bg-[#D4AF37] rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 32,
+                      }}
                     />
                   )}
                 </button>
-              )
+              );
             })}
           </div>
 
@@ -333,9 +391,9 @@ export default function PaymentPortal() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                {active === 'mpesa'  && <MpesaPanel />}
-                {active === 'bank'   && <BankPanel />}
-                {active === 'global' && <GlobalPanel />}
+                {active === "mpesa" && <MpesaPanel />}
+                {active === "bank" && <BankPanel />}
+                {active === "global" && <GlobalPanel />}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -351,9 +409,10 @@ export default function PaymentPortal() {
                   Tithe Boundary Protection
                 </p>
                 <p className="text-sm text-[#0F2942]/80 leading-relaxed mt-1">
-                  These are <span className="font-semibold">Freewill Offerings</span>
-                  &nbsp;above and beyond regular tithe. Tithe continues to be returned
-                  through your local conference channels.
+                  These are{" "}
+                  <span className="font-semibold">Freewill Offerings</span>
+                  &nbsp;above and beyond regular tithe. Tithe continues to be
+                  returned through your local conference channels.
                 </p>
               </div>
             </div>
@@ -367,9 +426,13 @@ export default function PaymentPortal() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#0F2942]/10 border border-[#0F2942]/10 rounded-2xl overflow-hidden">
             {[
-              { tier: 'District', name: 'Lokichogio',          note: 'Local Oversight' },
-              { tier: 'Station',  name: 'Kakuma',              note: 'Operational Base' },
-              { tier: 'Field',    name: 'Rift Valley Field',   note: 'Regional Authority' },
+              { tier: "District", name: "Lokichogio", note: "Local Oversight" },
+              { tier: "Station", name: "Kakuma", note: "Operational Base" },
+              {
+                tier: "Field",
+                name: "Rift Valley Field",
+                note: "Regional Authority",
+              },
             ].map((h) => (
               <div key={h.tier} className="bg-white px-5 py-6 text-center">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold">
@@ -378,9 +441,7 @@ export default function PaymentPortal() {
                 <p className="font-display font-bold text-[#0F2942] text-lg mt-2">
                   {h.name}
                 </p>
-                <p className="text-[11px] text-[#0F2942]/55 mt-1">
-                  {h.note}
-                </p>
+                <p className="text-[11px] text-[#0F2942]/55 mt-1">{h.note}</p>
               </div>
             ))}
           </div>
@@ -390,5 +451,5 @@ export default function PaymentPortal() {
         </div>
       </div>
     </section>
-  )
+  );
 }

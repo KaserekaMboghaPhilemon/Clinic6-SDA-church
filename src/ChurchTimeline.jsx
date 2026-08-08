@@ -1,6 +1,6 @@
 import React from "react";
 import firstStormVideo from "./assets/first-storm.mp4";
-import secondStormImage from "./assets/2nd-storm-wornout-building.png";
+import secondStormImage from "./assets/wornout-clinic6-church.png";
 
 const ChurchTimeline = () => {
   return (
@@ -23,16 +23,20 @@ const ChurchTimeline = () => {
               </video>
             </div>
 
-            <h3 className="text-xl font-semibold mb-3">The Strength to Begin Again</h3>
+            <h3 className="text-xl font-semibold mb-3">
+              The Strength to Begin Again
+            </h3>
             <p className="leading-relaxed">
-              When the first severe windstorm swept through our community, the impact was sudden and
-              severe. As captured in the documentary footage, powerful gusts ripped the corrugated iron
-              sheets (mabati) cleanly from the framework, scattering them across the muddy compound.
-              The damage was not isolated to our church alone-the heavy rain and winds affected our
-              entire neighborhood. Yet, in the immediate aftermath, our community did not hesitate.
-              Hand tools in hand, members immediately began straightening the metal sheets and
-              securing what could be saved. This initial phase was defined by quick mending, hope,
-              and an unyielding spirit of solidarity.
+              When the first severe windstorm swept through our community, the
+              impact was sudden and severe. As captured in the documentary
+              footage, powerful gusts ripped the corrugated iron sheets (mabati)
+              cleanly from the framework, scattering them across the muddy
+              compound. The damage was not isolated to our church alone-the
+              heavy rain and winds affected our entire neighborhood. Yet, in the
+              immediate aftermath, our community did not hesitate. Hand tools in
+              hand, members immediately began straightening the metal sheets and
+              securing what could be saved. This initial phase was defined by
+              quick mending, hope, and an unyielding spirit of solidarity.
             </p>
           </article>
 
@@ -51,15 +55,18 @@ const ChurchTimeline = () => {
               A Cumulative Crisis: Age, Wear, and the Second Storm
             </h3>
             <p className="leading-relaxed">
-              True structural resilience, however, requires more than temporary patches. Over time,
-              constant exposure to the semi-arid climate, heavy seasonal rains, and internal insect
-              degradation silently weakened the building's core timber frame. When the second storm
-              struck, it encountered a structure already deeply worn out. Unlike the first event where
-              sheets simply detached, this storm forced a severe structural failure. The main framework
-              splayed, and the roof system was completely exposed. This perspective reveals a sobering
-              reality: the aged timber can no longer support simple repairs. To ensure a safe, permanent
-              sanctuary for our community, we must now move past temporary mending toward a complete,
-              durable structural reconstruction.
+              True structural resilience, however, requires more than temporary
+              patches. Over time, constant exposure to the semi-arid climate,
+              heavy seasonal rains, and internal insect degradation silently
+              weakened the building's core timber frame. When the second storm
+              struck, it encountered a structure already deeply worn out. Unlike
+              the first event where sheets simply detached, this storm forced a
+              severe structural failure. The main framework splayed, and the
+              roof system was completely exposed. This perspective reveals a
+              sobering reality: the aged timber can no longer support simple
+              repairs. To ensure a safe, permanent sanctuary for our community,
+              we must now move past temporary mending toward a complete, durable
+              structural reconstruction.
             </p>
           </article>
         </div>

@@ -26,3 +26,13 @@ dist-ssr
 # Local raw camera exports (too large for regular git history)
 src/assets/Camera Roll/
 src/assets/Piga panda-Edden garden -choir sda clinic6.mp4
+*.zip
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+
+build/
+.env

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import './Donation.css'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Donation.css";
 
 /*
   Legacy donation page:
@@ -10,119 +10,126 @@ import './Donation.css'
 */
 
 const Donation = () => {
-  const [donationAmount, setDonationAmount] = useState('')
-  const [customAmount, setCustomAmount] = useState('')
-  const [selectedAmount, setSelectedAmount] = useState(null)
+  const [donationAmount, setDonationAmount] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
+  const [selectedAmount, setSelectedAmount] = useState(null);
   const [donorInfo, setDonorInfo] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
-  const predefinedAmounts = [25, 50, 100, 250, 500, 1000]
+  const predefinedAmounts = [25, 50, 100, 250, 500, 1000];
 
   const paymentMethods = [
     {
-      id: 'kcb',
-      name: 'KCB Bank',
-      description: 'Kenya Commercial Bank',
-      icon: '🏦'
+      id: "kcb",
+      name: "KCB Bank",
+      description: "Kenya Commercial Bank",
+      icon: "🏦",
     },
     {
-      id: 'equity',
-      name: 'Equity Bank',
-      description: 'Equity Bank Kenya',
-      icon: '🏦'
+      id: "equity",
+      name: "Equity Bank",
+      description: "Equity Bank Kenya Limited",
+      icon: "🏦",
     },
     {
-      id: 'paypal',
-      name: 'PayPal',
-      description: 'International payments',
-      icon: '💳'
+      id: "paypal",
+      name: "PayPal",
+      description: "International payments",
+      icon: "💳",
     },
     {
-      id: 'mpesa',
-      name: 'M-Pesa',
-      description: 'Mobile money',
-      icon: '📱'
+      id: "mpesa",
+      name: "M-Pesa",
+      description: "Mobile money",
+      icon: "📱",
     },
     {
-      id: 'paybill',
-      name: 'PayBill',
-      description: 'Business number payments',
-      icon: '📊'
-    }
-  ]
+      id: "paybill",
+      name: "PayBill",
+      description: "Business number payments",
+      icon: "📊",
+    },
+  ];
 
   // Clicking a preset amount clears any custom amount input.
   const handleAmountClick = (amount) => {
-    setSelectedAmount(amount)
-    setDonationAmount(amount)
-    setCustomAmount('')
-  }
+    setSelectedAmount(amount);
+    setDonationAmount(amount);
+    setCustomAmount("");
+  };
 
   // Custom amount entry overrides preset selection.
   const handleCustomAmountChange = (e) => {
-    const amount = e.target.value
-    setCustomAmount(amount)
-    setDonationAmount(amount)
-    setSelectedAmount(null)
-  }
+    const amount = e.target.value;
+    setCustomAmount(amount);
+    setDonationAmount(amount);
+    setSelectedAmount(null);
+  };
 
   // Keep donor info fields controlled and synchronized.
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setDonorInfo(prev => ({
+    const { name, value } = e.target;
+    setDonorInfo((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   // Lightweight frontend validation before simulated submit.
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const finalAmount = customAmount || donationAmount
-    
+    e.preventDefault();
+    const finalAmount = customAmount || donationAmount;
+
     if (!finalAmount) {
-      alert('Please select or enter a donation amount')
-      return
+      alert("Please select or enter a donation amount");
+      return;
     }
 
     if (!selectedPaymentMethod) {
-      alert('Please select a payment method')
-      return
+      alert("Please select a payment method");
+      return;
     }
 
-    console.log('Donation submitted:', {
+    console.log("Donation submitted:", {
       amount: finalAmount,
       paymentMethod: selectedPaymentMethod,
-      donor: donorInfo
-    })
-    
-    alert(`Thank you for your donation of $${finalAmount} via ${paymentMethods.find(m => m.id === selectedPaymentMethod)?.name}! We will process your donation shortly.`)
-    
+      donor: donorInfo,
+    });
+
+    alert(
+      `Thank you for your donation of $${finalAmount} via ${paymentMethods.find((m) => m.id === selectedPaymentMethod)?.name}! We will process your donation shortly.`,
+    );
+
     // Reset form
-    setDonationAmount('')
-    setCustomAmount('')
-    setSelectedAmount(null)
-    setSelectedPaymentMethod('')
+    setDonationAmount("");
+    setCustomAmount("");
+    setSelectedAmount(null);
+    setSelectedPaymentMethod("");
     setDonorInfo({
-      name: '',
-      email: '',
-      message: ''
-    })
-  }
+      name: "",
+      email: "",
+      message: "",
+    });
+  };
 
   return (
     <div className="donation-page">
       <div className="donation-container">
-        <Link to="/" className="back-link">← Back to Home</Link>
-        
+        <Link to="/" className="back-link">
+          ← Back to Home
+        </Link>
+
         <div className="donation-content">
           <div className="donation-hero">
             <h1>Support SDA Clinic6 Church Construction</h1>
-            <p>Your generous donation will help us build a beautiful house of worship for our community.</p>
+            <p>
+              Your generous donation will help us build a beautiful house of
+              worship for our community.
+            </p>
           </div>
 
           <div className="donation-main">
@@ -132,20 +139,22 @@ const Donation = () => {
                 <div className="form-section">
                   <h2>Select Donation Amount</h2>
                   <div className="amount-buttons">
-                    {predefinedAmounts.map(amount => (
+                    {predefinedAmounts.map((amount) => (
                       <button
                         key={amount}
                         type="button"
-                        className={`amount-btn ${selectedAmount === amount ? 'active' : ''}`}
+                        className={`amount-btn ${selectedAmount === amount ? "active" : ""}`}
                         onClick={() => handleAmountClick(amount)}
                       >
                         ${amount}
                       </button>
                     ))}
                   </div>
-                  
+
                   <div className="custom-amount">
-                    <label htmlFor="custom-amount">Or enter custom amount:</label>
+                    <label htmlFor="custom-amount">
+                      Or enter custom amount:
+                    </label>
                     <div className="amount-input-wrapper">
                       <span className="currency">$</span>
                       <input
@@ -164,7 +173,7 @@ const Donation = () => {
                 {/* Donor block: contact details and optional message. */}
                 <div className="form-section">
                   <h2>Your Information</h2>
-                  
+
                   <div className="form-group">
                     <label htmlFor="name">Full Name</label>
                     <input
@@ -208,19 +217,23 @@ const Donation = () => {
                 <div className="form-section">
                   <h2>Select Payment Method</h2>
                   <div className="payment-methods">
-                    {paymentMethods.map(method => (
+                    {paymentMethods.map((method) => (
                       <div
                         key={method.id}
-                        className={`payment-method ${selectedPaymentMethod === method.id ? 'active' : ''}`}
+                        className={`payment-method ${selectedPaymentMethod === method.id ? "active" : ""}`}
                         onClick={() => setSelectedPaymentMethod(method.id)}
                       >
                         <div className="payment-icon">{method.icon}</div>
                         <div className="payment-details">
                           <div className="payment-name">{method.name}</div>
-                          <div className="payment-description">{method.description}</div>
+                          <div className="payment-description">
+                            {method.description}
+                          </div>
                         </div>
                         <div className="payment-radio">
-                          <div className={`radio-circle ${selectedPaymentMethod === method.id ? 'selected' : ''}`}></div>
+                          <div
+                            className={`radio-circle ${selectedPaymentMethod === method.id ? "selected" : ""}`}
+                          ></div>
                         </div>
                       </div>
                     ))}
@@ -228,7 +241,7 @@ const Donation = () => {
                 </div>
 
                 <button type="submit" className="submit-btn">
-                  Donate Now - ${customAmount || donationAmount || '0'}
+                  Donate Now - ${customAmount || donationAmount || "0"}
                 </button>
               </form>
             </div>
@@ -236,13 +249,16 @@ const Donation = () => {
             <div className="donation-info-section">
               <div className="info-card">
                 <h3>Our Mission</h3>
-                <p>We are building a modern, welcoming church that will serve as a spiritual home for our community and a beacon of faith.</p>
+                <p>
+                  We are building a modern, welcoming church that will serve as
+                  a spiritual home for our community and a beacon of faith.
+                </p>
               </div>
 
               <div className="info-card">
                 <h3>Project Progress</h3>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: '45%' }}></div>
+                  <div className="progress-fill" style={{ width: "45%" }}></div>
                 </div>
                 <p>45% Complete - Help us reach our goal!</p>
               </div>
@@ -250,23 +266,26 @@ const Donation = () => {
               <div className="info-card">
                 <h3>How Your Donation Helps</h3>
                 <ul>
-                  <li>$25 - Helps with building materials</li>
-                  <li>$50 - Supports labor costs</li>
-                  <li>$100 - Contributes to infrastructure</li>
-                  <li>$500+ - Major project milestone contribution</li>
+                  <li>5,000kes - Helps with building materials</li>
+                  <li>2,000kes - Supports labor costs</li>
+                  <li>10,000kes - Contributes to infrastructure</li>
+                  <li>50,000++kes - Major project milestone contribution</li>
                 </ul>
               </div>
 
               <div className="info-card donation-methods">
                 <h3>Payment Methods</h3>
-                <p>Currently accepting direct donations. For payment processing, please contact us.</p>
+                <p>
+                  Currently accepting direct donations. For payment processing,
+                  please contact us.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Donation
+export default Donation;
