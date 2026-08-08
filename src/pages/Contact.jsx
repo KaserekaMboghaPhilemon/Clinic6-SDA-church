@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useT } from "../i18n.jsx";
+import MapJourney from "../components/MapJourney.jsx";
 
 export default function Contact() {
   const { t } = useT();
@@ -90,7 +91,6 @@ export default function Contact() {
               <li className="flex items-start gap-3">
                 <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37] shrink-0" />
                 <div>
-                  <p className="font-semibold text-[#0F2942]">Kakuma Station</p>
                   <p className="text-[11px] uppercase tracking-widest text-[#2D3142]/60">
                     {t("footer.tier.stationLabel")}
                   </p>
@@ -109,6 +109,9 @@ export default function Contact() {
               </li>
             </ol>
           </article>
+        </div>
+        <div className="mt-8">
+          <MapJourney />
         </div>
       </div>
     </section>
