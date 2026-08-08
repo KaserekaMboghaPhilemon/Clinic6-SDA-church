@@ -188,21 +188,25 @@ export default function App() {
         {/* Prevent x-axis overflow from creating bottom scrollbar on narrow viewports. */}
         <div className="relative min-h-screen overflow-x-hidden bg-[#F7F4EF] text-[#2D3142] font-sans pb-16">
           <div className="fixed inset-x-0 top-0 z-50 overflow-hidden bg-[#D4AF37] text-[#0F2942] border-b border-[#0F2942]/10 py-2">
-            <div className="marquee relative whitespace-nowrap text-center text-sm font-semibold uppercase tracking-[0.24em]">
+            <div className="marquee relative overflow-hidden whitespace-nowrap text-center text-sm font-semibold uppercase tracking-[0.24em]">
               <div className="marquee__track inline-block animate-marquee">
-                Site under development — content and layout are still being finalized.
+                Site under development — content and layout are still being
+                finalized.
                 <span className="mx-8">|</span>
-                Site under development — content and layout are still being finalized.
+                Site under development — content and layout are still being
+                finalized.
                 <span className="mx-8">|</span>
-                Site under development — content and layout are still being finalized.
+                Site under development — content and layout are still being
+                finalized.
               </div>
             </div>
           </div>
           <div className="pt-12">
             <Header />
-          <AnimatedRoutes />
-          <Footer />
-          <StickyActionBar />
+            <AnimatedRoutes />
+            <Footer />
+            <StickyActionBar />
+          </div>
         </div>
       </BrowserRouter>
       <style>{`
