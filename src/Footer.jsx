@@ -208,8 +208,8 @@ export default function Footer() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <a href="tel:+254700000000" className="hover:text-[#D4AF37]">
-                  +254 700 000 000
+                  <a href="tel:+254116854057" className="hover:text-[#D4AF37]">
+                    0116854057
                 </a>
               </div>
               <div className="mt-3">
