@@ -22,7 +22,7 @@ import baptismRiverPoster from "./assets/current baptism pool at structre.jpg";
 const constructionVideo = null;
 import constructionPoster from "./assets/dream-church1.png";
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create ? motion.create(Link) : motion(Link);
 
 /* ------------------------------------------------------------------ */
 /*  MediaCenter.jsx                                                    */
