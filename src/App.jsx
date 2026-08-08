@@ -186,19 +186,36 @@ export default function App() {
       <BrowserRouter>
         <ScrollManager />
         {/* Prevent x-axis overflow from creating bottom scrollbar on narrow viewports. */}
-        <div className="min-h-screen overflow-x-hidden bg-[#F7F4EF] text-[#2D3142] font-sans pb-16">
-          <div className="bg-[#D4AF37] text-[#0F2942] text-center px-4 py-2 border-b border-[#0F2942]/10">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em]">
-              Site under development — content and layout are still being
-              finalized.
-            </p>
+        <div className="relative min-h-screen overflow-x-hidden bg-[#F7F4EF] text-[#2D3142] font-sans pb-16">
+          <div className="fixed inset-x-0 top-0 z-50 overflow-hidden bg-[#D4AF37] text-[#0F2942] border-b border-[#0F2942]/10 py-2">
+            <div className="marquee relative whitespace-nowrap text-center text-sm font-semibold uppercase tracking-[0.24em]">
+              <div className="marquee__track inline-block animate-marquee">
+                Site under development — content and layout are still being finalized.
+                <span className="mx-8">|</span>
+                Site under development — content and layout are still being finalized.
+                <span className="mx-8">|</span>
+                Site under development — content and layout are still being finalized.
+              </div>
+            </div>
           </div>
-          <Header />
+          <div className="pt-12">
+            <Header />
           <AnimatedRoutes />
           <Footer />
           <StickyActionBar />
         </div>
       </BrowserRouter>
+      <style>{`
+        .animate-marquee {
+          display: inline-block;
+          padding-left: 100%;
+          animation: marquee 18s linear infinite;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </LanguageProvider>
   );
 }
