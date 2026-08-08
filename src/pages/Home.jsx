@@ -11,7 +11,6 @@ import { useT } from "../i18n.jsx";
 import { projectCatalog } from "../data/projectCatalog.js";
 import heroImage from "../assets/image_e6151f.png";
 import stormDamageImage from "../assets/wornout-clinic6-church.png";
-import firstStormVideo from "../assets/first-storm.mp4";
 import metalBuildImage from "../assets/assumed-for-work.png";
 import highDutyMetalImage from "../assets/high duty metal.jpg";
 import milestoneImage from "../assets/b2093d91212795215ff70d93560a56b1 (1).jpg";
@@ -488,7 +487,7 @@ export default function Home() {
           <figure className="group relative w-full overflow-hidden rounded-[28px] border border-white/35 bg-[#0A2436]/40 shadow-[0_30px_70px_-25px_rgba(0,0,0,0.75)]">
             <video
               className="aspect-video w-full object-cover min-h-[420px]"
-              src={firstStormVideo}
+              src="/videos/first-storm.mp4"
               autoPlay
               muted
               loop

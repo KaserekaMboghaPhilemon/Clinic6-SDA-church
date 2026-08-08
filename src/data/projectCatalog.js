@@ -1,14 +1,14 @@
 import churchAffectedImage from "../assets/church-affected1.jpeg";
 import secondStormImage from "../assets/wornout-clinic6-church.png";
-import firstStormVideo from "../assets/first-storm.mp4";
+// import firstStormVideo from "../assets/first-storm.mp4";
 import highDutyMetalImage from "../assets/high duty metal.jpg";
 import clinicDreamImage from "../assets/Clinic6 dream church (2).png";
 import dreamChurchOneImage from "../assets/dream-church1.png";
-import clinicDreamVideo from "../assets/Clinic6 dream church.mp4";
 import childrenChurchOneImage from "../assets/children's church (1).jpg";
-import childrenChurchVideoOne from "../assets/children's church video (1).mp4";
+// import childrenChurchVideoOne from "../assets/children's church video (1).mp4";
 import childrenChurchThreeImage from "../assets/children's church (3).jpg";
-import childrenChurchVideoTwo from "../assets/children's church video (2).mp4";
+// import clinicDreamVideo from "../assets/Clinic6 dream church.mp4";
+// import childrenChurchVideoTwo from "../assets/children's church video (2).mp4";
 import sabbathGroupFiveImage from "../assets/Sabbath school lesson groups (5).jpg";
 import sabbathGroupEightImage from "../assets/Sabbath school lesson groups (8).jpg";
 import donateTogetherImage from "../assets/donate-together.png";
@@ -24,22 +24,18 @@ import baptismClinicDefaultImage from "../assets/baptism at clinic6.jpg";
 import baptismPoolSceneImage from "../assets/IMG_20240824_164748_249.jpg";
 import jordanPoolImage from "../assets/current baptism pool at structre.jpg";
 import wornoutFenceImage from "../assets/wornout face2.jpg";
-import wornoutFenceVideo from "../assets/wornout face3.mp4";
+// import wornoutFenceVideo from '../assets/wornout face3.mp4';
 import durableFenceImage from "../assets/durable webed wire face.jpg";
 import durableFenceTwoImage from "../assets/durable webed wire face2.jpg";
 
 const assetMap = {
   "church-affected1.jpeg": churchAffectedImage,
   "wornout-clinic6-church.png": secondStormImage,
-  "first-storm.mp4": firstStormVideo,
   "high duty metal.jpg": highDutyMetalImage,
   "Clinic6 dream church (2).png": clinicDreamImage,
   "dream-church1.png": dreamChurchOneImage,
-  "Clinic6 dream church.mp4": clinicDreamVideo,
   "children's church (1).jpg": childrenChurchOneImage,
-  "children's church video (1).mp4": childrenChurchVideoOne,
   "children's church (3).jpg": childrenChurchThreeImage,
-  "children's church video (2).mp4": childrenChurchVideoTwo,
   "Sabbath school lesson groups (5).jpg": sabbathGroupFiveImage,
   "Sabbath school lesson groups (8).jpg": sabbathGroupEightImage,
   "donate-together.png": donateTogetherImage,
@@ -52,16 +48,15 @@ const assetMap = {
   "baptism at clinic6(7).jpg": baptismClinicSevenImage,
   "current baptism pool at structre.jpg": jordanPoolImage,
   "wornout face2.jpg": wornoutFenceImage,
-  "wornout face3.mp4": wornoutFenceVideo,
   "durable webed wire face.jpg": durableFenceImage,
   "durable webed wire face2.jpg": durableFenceTwoImage,
-};
-
-function resolveAssetPath(src, type) {
-  if (!src || !src.startsWith("/src/assets/")) {
-    return src;
-  }
-
+      {
+        type: 'image',
+        src: '/src/assets/high duty metal.jpg',
+        alt: 'High-duty metal and reinforcement materials',
+        illustration:
+          'Reference image showing high-duty metal intended for reinforced frame joins and improved sanctuary durability.',
+      },
   const fileName = src.replace("/src/assets/", "");
   const resolved = assetMap[fileName];
 
@@ -70,7 +65,8 @@ function resolveAssetPath(src, type) {
   }
 
   if (type === "video") {
-    return firstStormVideo;
+    // Return a safe image fallback for video placeholders so bundling doesn't require local mp4 files
+    return baptismClinicDefaultImage;
   }
 
   return baptismClinicDefaultImage;
@@ -92,13 +88,13 @@ const rawProjectCatalog = [
       "Welding consumables, bolts, ridge caps, and weatherproofing",
       "Skilled welding labour and on-site logistics",
       "Interior seating base, floor leveling, and basic electrical",
-    ],
-    expectedImpact:
-      "A permanent 30 m × 15 m metal-frame sanctuary (5 m wall plate + 4 m roof ridge) providing dignified worship for 868 members — storm-resistant, long-lasting, and fully covered with iron sheets from roof to walls.",
-    budgetCurrency: "USD",
-    budgetItems: [
       {
-        id: "metal-poles",
+        type: 'image',
+        src: '/src/assets/dream-church1.png',
+        alt: 'Dream church concept walkthrough (poster)',
+        illustration:
+          'Conceptual poster illustrating the intended sanctuary and circulation.',
+      },
         item: "Heavy-duty metal poles — uprights and perimeter columns",
         cost: 8500,
         detail:
@@ -163,11 +159,11 @@ const rawProjectCatalog = [
           "Second-stage deterioration where repeated storms compromised structural reliability.",
       },
       {
-        type: "video",
-        src: "/src/assets/first-storm.mp4",
-        alt: "Video footage of storm impact on the worship structure",
+        type: "image",
+        src: "/src/assets/church-affected1.jpeg",
+        alt: "Storm impact reference image",
         illustration:
-          "Field footage documenting wind and weather damage affecting the current worship shelter.",
+          "Reference image related to storm impact affecting the worship shelter.",
       },
       {
         type: "image",
@@ -200,11 +196,11 @@ const rawProjectCatalog = [
           "High-duty metal reference showing the durability standard for the sanctuary frame: thicker steel sections, anti-rust protection, and bolt-joined connections designed to handle heavy load, wind stress, and long-term structural use.",
       },
       {
-        type: "video",
-        src: "/src/assets/Clinic6 dream church.mp4",
-        alt: "Dream church concept walkthrough",
+        type: "image",
+        src: "/src/assets/dream-church1.png",
+        alt: "Dream church concept poster",
         illustration:
-          "Vision walkthrough to help donors understand layout progression from entrance to worship hall.",
+          "Concept poster to help donors understand the sanctuary vision.",
       },
     ],
   },
@@ -281,11 +277,11 @@ const rawProjectCatalog = [
           "Current children ministry setting showing the need for a safer, better-equipped worship and learning space.",
       },
       {
-        type: "video",
-        src: "/src/assets/children's church video (1).mp4",
-        alt: "Children church activity video",
+        type: "image",
+        src: "/src/assets/children's church (3).jpg",
+        alt: "Children church activity (still)",
         illustration:
-          "Activity footage showing how children currently gather and participate with limited ministry infrastructure.",
+          "Still image representing children ministry activities in current settings.",
       },
     ],
     dreamMedia: [
@@ -297,11 +293,11 @@ const rawProjectCatalog = [
           "Illustrative reference for a structured, joyful, and protected children worship environment.",
       },
       {
-        type: "video",
-        src: "/src/assets/children's church video (2).mp4",
-        alt: "Illustrative children church vision video",
+        type: "image",
+        src: "/src/assets/children's church (3).jpg",
+        alt: "Children church vision (still)",
         illustration:
-          "Illustrative motion reference showing the type of active and organized children ministry environment being pursued.",
+          "Illustrative still showing the envisioned children ministry environment.",
       },
     ],
   },
@@ -649,11 +645,11 @@ const rawProjectCatalog = [
           "This is what remains of the church perimeter fence today — completely collapsed and offering zero protection. Theft and outside intrusions are now a regular reality for this congregation.",
       },
       {
-        type: "video",
-        src: "/src/assets/wornout face3.mp4",
-        alt: "Video showing the current state of the failed church boundary fence",
+        type: "image",
+        src: "/src/assets/wornout face2.jpg",
+        alt: "Current collapsed church perimeter fence",
         illustration:
-          "Field footage capturing the full extent of the collapsed boundary. Every member, every instrument, and every resource inside is now exposed and vulnerable without donor support.",
+          "Reference still showing the collapsed boundary fence and its vulnerability.",
       },
     ],
     dreamMedia: [

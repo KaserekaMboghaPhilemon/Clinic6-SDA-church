@@ -1,27 +1,28 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import baptismPondVideo from './assets/first-storm.mp4'
-import basinImg1 from './assets/baptism at clinic6.jpg'
-import basinImg5 from './assets/baptism at clinic6(6).jpg'
-import basinImg4 from './assets/IMG_20240824_164748_249.jpg'
-import choirWorshipPoster from './assets/church-affected1.jpeg'
-import childrenChurchImg from "./assets/children's church (1).jpg"
-import lessonsImg from './assets/Sabbath school lesson groups (5).jpg'
-import sabbathSchoolImg from './assets/Sabbath school lesson groups (8).jpg'
-import childrenSingingImg from "./assets/children's church (3).jpg"
-import youthBibleImg from "./assets/children's church (2).jpg"
-import outreachFoodVideo from './assets/sabbath-school-groups (5).mp4'
-import outreachFoodPoster from './assets/Sabbath school lesson groups (10).jpg'
-import choirProclamationVideo from './assets/sabbath-school-groups (6).mp4'
-import choirProclamationPoster from './assets/Sabbath school lesson groups (11).jpg'
-import healthClinicVideo from './assets/sabbath-school-groups (7).mp4'
-import healthClinicPoster from './assets/Sabbath school lesson groups (12).jpg'
-import baptismRiverPoster from './assets/current baptism pool at structre.jpg'
-import constructionVideo from './assets/Clinic6 dream church.mp4'
-import constructionPoster from './assets/dream-church1.png'
+import { AnimatePresence, motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import basinImg1 from "./assets/baptism at clinic6.jpg";
+import basinImg5 from "./assets/baptism at clinic6(6).jpg";
+import basinImg4 from "./assets/IMG_20240824_164748_249.jpg";
+import choirWorshipPoster from "./assets/church-affected1.jpeg";
+import childrenChurchImg from "./assets/children's church (1).jpg";
+import lessonsImg from "./assets/Sabbath school lesson groups (5).jpg";
+import sabbathSchoolImg from "./assets/Sabbath school lesson groups (8).jpg";
+import childrenSingingImg from "./assets/children's church (3).jpg";
+import youthBibleImg from "./assets/children's church (2).jpg";
+// Large local videos are served from `public/videos` at runtime to avoid bundling them.
+const baptismPondVideo = "/videos/first-storm.mp4";
+const outreachFoodVideo = null;
+import outreachFoodPoster from "./assets/Sabbath school lesson groups (10).jpg";
+const choirProclamationVideo = null;
+import choirProclamationPoster from "./assets/Sabbath school lesson groups (11).jpg";
+const healthClinicVideo = null;
+import healthClinicPoster from "./assets/Sabbath school lesson groups (12).jpg";
+import baptismRiverPoster from "./assets/current baptism pool at structre.jpg";
+const constructionVideo = null;
+import constructionPoster from "./assets/dream-church1.png";
 
-const MotionLink = motion(Link)
+const MotionLink = motion(Link);
 
 /* ------------------------------------------------------------------ */
 /*  MediaCenter.jsx                                                    */
@@ -30,20 +31,20 @@ const MotionLink = motion(Link)
 /* ------------------------------------------------------------------ */
 
 /* Reusable fade-in-up wrapper driven by viewport scroll */
-const FadeInUp = ({ children, delay = 0, className = '' }) => (
+const FadeInUp = ({ children, delay = 0, className = "" }) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: '-80px' }}
+    viewport={{ once: true, margin: "-80px" }}
     transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
     className={className}
   >
     {children}
   </motion.div>
-)
+);
 
 /* Inline SVG play icon — keeps the file self-contained, no icon lib */
-const PlayIcon = ({ className = 'w-12 h-12' }) => (
+const PlayIcon = ({ className = "w-12 h-12" }) => (
   <svg
     viewBox="0 0 24 24"
     fill="currentColor"
@@ -52,16 +53,16 @@ const PlayIcon = ({ className = 'w-12 h-12' }) => (
   >
     <path d="M8 5v14l11-7z" />
   </svg>
-)
+);
 
 /* ============================================================ */
 /*  1. CINEMATIC VIDEO HERO                                      */
 /* ============================================================ */
 function VideoHero() {
   const scrollToOutreach = () => {
-    const el = document.getElementById('outreach')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+    const el = document.getElementById("outreach");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <section
@@ -114,18 +115,22 @@ function VideoHero() {
           >
             <PlayIcon className="w-5 h-5" />
             Watch Our Story
-            <span className="transition-transform group-hover:translate-x-1">→</span>
+            <span className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </button>
         </FadeInUp>
       </div>
 
       {/* Scroll cue */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center text-white/60">
-        <span className="text-[10px] uppercase tracking-[0.3em] mb-2">Scroll</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] mb-2">
+          Scroll
+        </span>
         <div className="w-px h-10 bg-gradient-to-b from-white/60 to-transparent" />
       </div>
     </section>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -136,40 +141,40 @@ function BentoGrid() {
   const tiles = [
     {
       src: childrenChurchImg,
-      alt: 'Clinic 6 children gathered for Sabbath worship',
-      label: 'Children of the Promise',
-      span: 'md:col-span-2 md:row-span-4',  // large hero tile
-      aspect: '',
+      alt: "Clinic 6 children gathered for Sabbath worship",
+      label: "Children of the Promise",
+      span: "md:col-span-2 md:row-span-4", // large hero tile
+      aspect: "",
     },
     {
       src: lessonsImg,
-      alt: 'Sabbath school lesson study at Clinic 6',
-      label: 'Daily Lessons',
-      span: 'md:col-span-2 md:row-span-2',  // wide top-right
-      aspect: '',
+      alt: "Sabbath school lesson study at Clinic 6",
+      label: "Daily Lessons",
+      span: "md:col-span-2 md:row-span-2", // wide top-right
+      aspect: "",
     },
     {
       src: sabbathSchoolImg,
-      alt: 'Sabbath school children singing together',
-      label: 'Sabbath School',
-      span: 'md:col-span-1 md:row-span-2',
-      aspect: 'aspect-square',
+      alt: "Sabbath school children singing together",
+      label: "Sabbath School",
+      span: "md:col-span-1 md:row-span-2",
+      aspect: "aspect-square",
     },
     {
       src: childrenSingingImg,
-      alt: 'Children choir performing in the sanctuary',
-      label: 'Voices of Tomorrow',
-      span: 'md:col-span-1 md:row-span-2',
-      aspect: 'aspect-square',
+      alt: "Children choir performing in the sanctuary",
+      label: "Voices of Tomorrow",
+      span: "md:col-span-1 md:row-span-2",
+      aspect: "aspect-square",
     },
     {
       src: youthBibleImg,
-      alt: 'Youth holding Bibles after a service at Clinic 6',
-      label: 'Discipling the Next Generation',
-      span: 'md:col-span-4 md:row-span-2',  // full-width banner row
-      aspect: '',
+      alt: "Youth holding Bibles after a service at Clinic 6",
+      label: "Discipling the Next Generation",
+      span: "md:col-span-4 md:row-span-2", // full-width banner row
+      aspect: "",
     },
-  ]
+  ];
 
   return (
     <section className="bg-[#F7F4EF] py-24 md:py-32 px-6">
@@ -179,7 +184,8 @@ function BentoGrid() {
             Children & Education
           </p>
           <h2 className="font-display font-black text-[#0F2942] text-4xl md:text-6xl leading-[1.05]">
-            Empowering <span className="italic text-[#D4AF37]">493 Children</span>
+            Empowering{" "}
+            <span className="italic text-[#D4AF37]">493 Children</span>
             <br />
             Across Kakuma.
           </h2>
@@ -224,7 +230,7 @@ function BentoGrid() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -234,40 +240,42 @@ function SacredBasinGallery() {
   // Ordered gallery data includes the exact requested filenames.
   const basinImages = [
     {
-      id: 'basin-1',
+      id: "basin-1",
       src: basinImg1,
-      fileName: 'IMG_20240824_134817_754.jpg',
-      label: 'Sacred Renewal: Full Immersion Baptism',
+      fileName: "IMG_20240824_134817_754.jpg",
+      label: "Sacred Renewal: Full Immersion Baptism",
     },
     {
-      id: 'basin-4',
+      id: "basin-4",
       src: basinImg4,
-      fileName: 'IMG_20240824_164745_756.jpg',
-      label: 'Community Baptism: Joy at the Basin',
+      fileName: "IMG_20240824_164745_756.jpg",
+      label: "Community Baptism: Joy at the Basin",
     },
     {
-      id: 'basin-5',
+      id: "basin-5",
       src: basinImg5,
-      fileName: 'baptism at clinic6(6).jpg',
-      label: 'Sacred Basin Dedication: Prayer and Commitment',
+      fileName: "baptism at clinic6(6).jpg",
+      label: "Sacred Basin Dedication: Prayer and Commitment",
     },
-  ]
+  ];
 
-  const [activeIndex, setActiveIndex] = useState(0)
-  const activeImage = basinImages[activeIndex]
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeImage = basinImages[activeIndex];
 
   const goNext = () => {
-    setActiveIndex((prev) => (prev + 1) % basinImages.length)
-  }
+    setActiveIndex((prev) => (prev + 1) % basinImages.length);
+  };
 
   const goPrev = () => {
-    setActiveIndex((prev) => (prev - 1 + basinImages.length) % basinImages.length)
-  }
+    setActiveIndex(
+      (prev) => (prev - 1 + basinImages.length) % basinImages.length,
+    );
+  };
 
   // Fallback keeps gallery stable if one expected file is not yet present.
   const handleImageFallback = (event) => {
-    event.currentTarget.src = basinImg1
-  }
+    event.currentTarget.src = basinImg1;
+  };
 
   return (
     <section className="bg-[#F7F4EF] py-20 md:py-24 px-6">
@@ -282,7 +290,10 @@ function SacredBasinGallery() {
         </FadeInUp>
 
         {/* Hero slider with fade switch and edge-mounted arrows. */}
-        <FadeInUp delay={0.08} className="relative overflow-hidden rounded-3xl border border-[#556B2F]/25 bg-black shadow-2xl">
+        <FadeInUp
+          delay={0.08}
+          className="relative overflow-hidden rounded-3xl border border-[#556B2F]/25 bg-black shadow-2xl"
+        >
           <div className="relative aspect-video">
             <AnimatePresence mode="wait">
               <motion.img
@@ -293,7 +304,7 @@ function SacredBasinGallery() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </AnimatePresence>
@@ -301,7 +312,9 @@ function SacredBasinGallery() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/25" />
 
             <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
-              <p className="text-white/85 text-xs uppercase tracking-[0.2em]">{activeImage.fileName}</p>
+              <p className="text-white/85 text-xs uppercase tracking-[0.2em]">
+                {activeImage.fileName}
+              </p>
               <h3 className="mt-2 text-white font-display text-2xl md:text-3xl font-black">
                 Our Sacred Basin: Dedicated Baptismal Pond
               </h3>
@@ -328,9 +341,12 @@ function SacredBasinGallery() {
 
         {/* Mobile-safe horizontal thumbnail strip with active border state. */}
         <FadeInUp delay={0.12} className="mt-5 md:mt-6">
-          <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: 'thin' }}>
+          <div
+            className="flex gap-3 md:gap-4 overflow-x-auto pb-2"
+            style={{ scrollbarWidth: "thin" }}
+          >
             {basinImages.map((item, index) => {
-              const isActive = index === activeIndex
+              const isActive = index === activeIndex;
 
               return (
                 <button
@@ -338,10 +354,10 @@ function SacredBasinGallery() {
                   type="button"
                   onClick={() => setActiveIndex(index)}
                   className={
-                    'min-w-[180px] sm:min-w-[210px] text-left rounded-2xl border bg-white p-2 md:p-2.5 transition ' +
+                    "min-w-[180px] sm:min-w-[210px] text-left rounded-2xl border bg-white p-2 md:p-2.5 transition " +
                     (isActive
-                      ? 'border-[#556B2F] shadow-lg'
-                      : 'border-[#556B2F]/20 hover:border-[#556B2F]/45')
+                      ? "border-[#556B2F] shadow-lg"
+                      : "border-[#556B2F]/20 hover:border-[#556B2F]/45")
                   }
                 >
                   <img
@@ -355,13 +371,13 @@ function SacredBasinGallery() {
                     {item.label}
                   </p>
                 </button>
-              )
+              );
             })}
           </div>
         </FadeInUp>
       </div>
     </section>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -370,46 +386,49 @@ function SacredBasinGallery() {
 function OutreachReel() {
   const reels = [
     {
-      title: 'Community Food Outreach',
-      subtitle: 'Kakuma Sector 3 · 2025',
+      title: "Community Food Outreach",
+      subtitle: "Kakuma Sector 3 · 2025",
       src: outreachFoodVideo,
       poster: outreachFoodPoster,
-      alt: 'Volunteers distributing food parcels at Clinic 6 outreach',
+      alt: "Volunteers distributing food parcels at Clinic 6 outreach",
     },
     {
-      title: 'Choir Proclamation',
-      subtitle: '868 Voices · Live',
+      title: "Choir Proclamation",
+      subtitle: "868 Voices · Live",
       src: choirProclamationVideo,
       poster: choirProclamationPoster,
-      alt: 'Clinic 6 choir proclaiming the gospel in song',
+      alt: "Clinic 6 choir proclaiming the gospel in song",
     },
     {
-      title: 'Health Clinic Service',
-      subtitle: 'Free Medical Camp',
+      title: "Health Clinic Service",
+      subtitle: "Free Medical Camp",
       src: healthClinicVideo,
       poster: healthClinicPoster,
-      alt: 'Health camp serving Kakuma residents',
+      alt: "Health camp serving Kakuma residents",
     },
     {
-      title: 'many water',
-      subtitle: 'Constructed Baptismal Pond · Clinic 6 Mission Grounds',
+      title: "many water",
+      subtitle: "Constructed Baptismal Pond · Clinic 6 Mission Grounds",
       // Uses a real local baptism video capture for this reel tile.
       src: baptismPondVideo,
       showVideo: true,
       poster: baptismRiverPoster,
-      alt: 'Baptism ceremony at the constructed baptismal pond',
+      alt: "Baptism ceremony at the constructed baptismal pond",
     },
     {
-      title: 'Sanctuary Build-Up',
-      subtitle: 'Construction Progress',
+      title: "Sanctuary Build-Up",
+      subtitle: "Construction Progress",
       src: constructionVideo,
       poster: constructionPoster,
-      alt: 'Ongoing construction of the Clinic 6 sanctuary',
+      alt: "Ongoing construction of the Clinic 6 sanctuary",
     },
-  ]
+  ];
 
   return (
-    <section id="outreach" className="bg-[#0F2942] py-24 md:py-32 overflow-hidden">
+    <section
+      id="outreach"
+      className="bg-[#0F2942] py-24 md:py-32 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-6">
         <FadeInUp className="mb-14 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div className="max-w-2xl">
@@ -431,7 +450,7 @@ function OutreachReel() {
       <FadeInUp delay={0.2}>
         <div
           className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 px-6 md:px-[max(1.5rem,calc((100vw-1280px)/2))]"
-          style={{ scrollbarWidth: 'thin' }}
+          style={{ scrollbarWidth: "thin" }}
         >
           {reels.map((reel) => (
             <article
@@ -484,7 +503,7 @@ function OutreachReel() {
         </div>
       </FadeInUp>
     </section>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -492,10 +511,10 @@ function OutreachReel() {
 /* ============================================================ */
 function StatsBanner() {
   const stats = [
-    { value: '1,700+', label: 'Total Footprint' },
-    { value: '4',       label: 'Churches Planted' },
-    { value: '850',     label: 'Seats Goal' },
-  ]
+    { value: "1,700+", label: "Total Footprint" },
+    { value: "4", label: "Churches Planted" },
+    { value: "850", label: "Seats Goal" },
+  ];
 
   return (
     <section className="bg-white py-16 md:py-20 px-6">
@@ -519,7 +538,7 @@ function StatsBanner() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -546,7 +565,7 @@ function StickyGiveWidget() {
       </span>
       <span className="transition-transform group-hover:translate-x-1">→</span>
     </MotionLink>
-  )
+  );
 }
 
 /* ============================================================ */
@@ -562,5 +581,5 @@ export default function MediaCenter() {
       <StatsBanner />
       <StickyGiveWidget />
     </main>
-  )
+  );
 }

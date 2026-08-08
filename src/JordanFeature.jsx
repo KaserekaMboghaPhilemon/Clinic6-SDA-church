@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import jordanVideo from "./assets/first-storm.mp4";
 
-const jordanPoolImage = "https://i.pinimg.com/736x/55/e5/96/55e5968bf992a715ac4a1c5b0e74bff7.jpg";
+const jordanPoolImage =
+  "https://i.pinimg.com/736x/55/e5/96/55e5968bf992a715ac4a1c5b0e74bff7.jpg";
 
 const JordanFeature = () => {
   return (
@@ -24,34 +24,41 @@ const JordanFeature = () => {
               preload="metadata"
               aria-label="Community members preparing and filling a lined baptism pit"
             >
-              <source src={jordanVideo} type="video/mp4" />
+              <source src="/videos/first-storm.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </figure>
         </div>
 
         <div className="lg:pt-2">
-          <h2 className="text-3xl md:text-4xl font-bold mb-5">The Jordan Initiative</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-5">
+            The Jordan Initiative
+          </h2>
           <p className="text-slate-300 leading-relaxed text-base md:text-lg">
-            In Kakuma, Kenya, faith is not an abstract idea. It is lived, carried, and built by
-            hand. Our community worships in a semi-arid region where there are no natural rivers
-            to support baptism, yet families still gather with reverence to mark this sacred step
-            of commitment. When the time comes, members of the church and neighborhood work side
-            by side to dig a pit in hard ground, line it carefully, and then transport water
-            manually until there is enough for the ceremony. What others might see as an obstacle,
-            we have answered with unity, endurance, and devotion.
+            In Kakuma, Kenya, faith is not an abstract idea. It is lived,
+            carried, and built by hand. Our community worships in a semi-arid
+            region where there are no natural rivers to support baptism, yet
+            families still gather with reverence to mark this sacred step of
+            commitment. When the time comes, members of the church and
+            neighborhood work side by side to dig a pit in hard ground, line it
+            carefully, and then transport water manually until there is enough
+            for the ceremony. What others might see as an obstacle, we have
+            answered with unity, endurance, and devotion.
             <br />
             <br />
-            This effort reflects extraordinary resilience, but it also reveals a clear and urgent
-            need. Temporary pits are labor-intensive, vulnerable to contamination, and difficult to
-            maintain in extreme weather. Each event requires significant physical effort from people
-            already managing limited resources. The Jordan Initiative is our response: a fundable,
-            practical plan to develop sustainable and dignified water storage infrastructure that can
-            safely support baptisms and other community needs. With partner support, we can move
-            from repeated emergency preparation to a reliable system designed for health, safety, and
-            continuity. Investing in this initiative means protecting a core expression of faith,
-            honoring local leadership, and strengthening a community that has already proven what is
-            possible when hope is matched with action.
+            This effort reflects extraordinary resilience, but it also reveals a
+            clear and urgent need. Temporary pits are labor-intensive,
+            vulnerable to contamination, and difficult to maintain in extreme
+            weather. Each event requires significant physical effort from people
+            already managing limited resources. The Jordan Initiative is our
+            response: a fundable, practical plan to develop sustainable and
+            dignified water storage infrastructure that can safely support
+            baptisms and other community needs. With partner support, we can
+            move from repeated emergency preparation to a reliable system
+            designed for health, safety, and continuity. Investing in this
+            initiative means protecting a core expression of faith, honoring
+            local leadership, and strengthening a community that has already
+            proven what is possible when hope is matched with action.
           </p>
 
           <Link

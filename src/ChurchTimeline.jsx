@@ -1,5 +1,4 @@
 import React from "react";
-import firstStormVideo from "./assets/first-storm.mp4";
 import secondStormImage from "./assets/wornout-clinic6-church.png";
 
 const ChurchTimeline = () => {
@@ -18,7 +17,7 @@ const ChurchTimeline = () => {
                 controls
                 preload="metadata"
               >
-                <source src={firstStormVideo} type="video/mp4" />
+                <source src="/videos/first-storm.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
