@@ -83,13 +83,11 @@ const rawProjectCatalog = [
       "Welding consumables, bolts, ridge caps, and weatherproofing",
       "Skilled welding labour and on-site logistics",
       "Interior seating base, floor leveling, and basic electrical",
+    ],
+    budgetCurrency: "USD",
+    budgetItems: [
       {
-        type: 'image',
-        src: '/src/assets/dream-church1.png',
-        alt: 'Dream church concept walkthrough (poster)',
-        illustration:
-          'Conceptual poster illustrating the intended sanctuary and circulation.',
-      },
+        id: "heavy-duty-metal-poles",
         item: "Heavy-duty metal poles — uprights and perimeter columns",
         cost: 8500,
         detail:
