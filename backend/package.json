@@ -1,0 +1,17 @@
+{
+  "name": "clinic6-sda-backend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "express": "^4.18.4",
+    "dotenv": "^16.1.4",
+    "helmet": "^7.0.0",
+    "cors": "^2.8.5"
+  }
+}
