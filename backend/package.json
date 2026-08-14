@@ -6,12 +6,20 @@
   "scripts": {
     "dev": "node src/index.js",
     "start": "node src/index.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "node prisma/seed.js"
   },
   "dependencies": {
-    "express": "^4.18.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.1.4",
-    "helmet": "^7.0.0",
-    "cors": "^2.8.5"
+    "express": "^4.18.4",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "7.9.1",
+    "prisma": "7.9.1"
   }
 }

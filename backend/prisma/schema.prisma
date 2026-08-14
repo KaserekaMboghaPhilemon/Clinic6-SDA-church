@@ -1,0 +1,789 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  DONOR
+  VOLUNTEER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum DonationStatus {
+  PENDING
+  PROCESSING
+  VERIFIED
+  FAILED
+  CANCELLED
+  REFUNDED
+  REVERSED
+}
+
+enum PledgeStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+  DEFAULTED
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum ConstructionPhaseStatus {
+  PLANNED
+  IN_PROGRESS
+  DELAYED
+  ON_HOLD
+  COMPLETED
+}
+
+enum ExpenseStatus {
+  PENDING
+  APPROVED
+  PAID
+  REJECTED
+}
+
+enum VolunteerStatus {
+  ACTIVE
+  INACTIVE
+  INACTIVE_REQUEST
+}
+
+enum ShiftStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum RefundType {
+  FULL_REFUND
+  PARTIAL_REFUND
+  REVERSAL
+}
+
+enum RefundReversalStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  DELIVERED
+  READ
+}
+
+enum MaterialStatus {
+  REQUESTED
+  APPROVED
+  RECEIVED
+  USED
+  RETURNED
+}
+
+enum SeatingStatus {
+  AVAILABLE
+  RESERVED
+  SPONSORED
+  COMPLETED
+}
+
+// ============================================================
+// CORE USER & DONOR ENTITIES
+// ============================================================
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String?
+  firstName    String?
+  lastName     String?
+  phoneNumber  String?
+  role         UserRole   @default(DONOR)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  lastLoginAt  DateTime?
+  archivedAt   DateTime?
+
+  // Relationships
+  donor                    Donor?
+  volunteer                Volunteer?
+  donations                Donation[]
+  pledges                  Pledge[]
+  receipts                 Receipt[]
+  volunteerShifts          VolunteerShift[]
+  expensesSubmitted        Expense[]        @relation("ExpenseSubmitter")
+  expensesApproved         Expense[]        @relation("ExpenseApprover")
+  refundReversalsInitiated RefundReversal[] @relation("RefundInitiator")
+  auditLogs                AuditLog[]
+
+  @@index([email])
+  @@index([status])
+  @@index([role])
+  @@index([createdAt])
+}
+
+model Donor {
+  id                        String    @id @default(cuid())
+  userId                    String    @unique
+  giverName                 String?
+  country                   String?
+  totalDonatedKES           Decimal   @default(0) @db.Decimal(12, 2)
+  totalDonatedOriginal      Decimal   @default(0) @db.Decimal(12, 2)
+  totalPledgedKES           Decimal   @default(0) @db.Decimal(12, 2)
+  totalPledgedOriginal      Decimal   @default(0) @db.Decimal(12, 2)
+  donationCount             Int       @default(0)
+  pledgeCount               Int       @default(0)
+  preferredDisplayCurrency  String? // ISO 4217 currency code
+  displayCurrencyAutoDetect Boolean   @default(true)
+  receiptEmailPreference    String?
+  optInMarketing            Boolean   @default(false)
+  optInUpdates              Boolean   @default(false)
+  notes                     String?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+  archivedAt                DateTime?
+
+  // Relationships
+  user                User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  donations           Donation[]
+  pledges             Pledge[]
+  receipts            Receipt[]
+  currencyPreferences DonorCurrencyPreference[]
+
+  @@index([userId])
+  @@index([totalDonatedKES])
+  @@index([donationCount])
+  @@index([createdAt])
+  @@index([archivedAt])
+  @@index([preferredDisplayCurrency])
+}
+
+// ============================================================
+// CURRENCY & FINANCIAL INFRASTRUCTURE
+// ============================================================
+
+model Currency {
+  id            String   @id @default(cuid())
+  code          String   @unique @db.VarChar(3) // ISO 4217
+  name          String
+  symbol        String
+  decimalPlaces Int      @default(2)
+  active        Boolean  @default(true)
+  settlementMap String? // ISO 4217 code for settlement currency
+  searchAliases Json? // JSON array of aliases
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  countries                CurrencyCountry[]
+  exchangeRatesSource      ExchangeRate[]            @relation("SourceCurrency")
+  exchangeRatesTarget      ExchangeRate[]            @relation("TargetCurrency")
+  donations                Donation[]
+  donorCurrencyPreferences DonorCurrencyPreference[]
+
+  @@index([code])
+  @@index([active])
+  @@index([displayOrder])
+}
+
+model CurrencyCountry {
+  id          String   @id @default(cuid())
+  currencyId  String
+  countryCode String   @db.VarChar(2) // ISO 3166-1 alpha-2
+  countryName String
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  // Relationships
+  currency Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+
+  @@unique([currencyId, countryCode])
+  @@index([currencyId])
+  @@index([countryCode])
+  @@index([isPrimary])
+}
+
+model ExchangeRate {
+  id                String   @id @default(cuid())
+  sourceCode        String   @db.VarChar(3)
+  targetCode        String   @db.VarChar(3)
+  rate              Decimal  @db.Decimal(15, 6)
+  timestamp         DateTime
+  source            String // Provider name (e.g., "openexchangerates", "xe", "cbk")
+  reliable          Boolean  @default(true)
+  usedInTransaction Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  // Relationships
+  sourceCurrency Currency?    @relation("SourceCurrency", fields: [sourceCode], references: [code])
+  targetCurrency Currency?    @relation("TargetCurrency", fields: [targetCode], references: [code])
+  donations      Donation[]
+  settlements    Settlement[]
+
+  @@index([sourceCode])
+  @@index([targetCode])
+  @@index([timestamp])
+  @@index([source])
+  @@index([usedInTransaction])
+}
+
+model DonorCurrencyPreference {
+  id                String   @id @default(cuid())
+  donorId           String
+  currencyCode      String   @db.VarChar(3)
+  isManualSelection Boolean  @default(false)
+  detectionMethod   String? // locale, timezone, ipgeo, manual, etc.
+  selectionReason   String?
+  activeSince       DateTime @default(now())
+  createdAt         DateTime @default(now())
+
+  // Relationships
+  donor    Donor    @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  currency Currency @relation(fields: [currencyCode], references: [code])
+
+  @@index([donorId])
+  @@index([currencyCode])
+  @@index([activeSince])
+}
+
+// ============================================================
+// DONATION & PAYMENT ENTITIES
+// ============================================================
+
+model Donation {
+  id                    String         @id @default(cuid())
+  donorId               String
+  projectId             String
+  amountOriginal        Decimal        @db.Decimal(12, 2)
+  currencyOriginal      String         @db.VarChar(3)
+  amountSettlement      Decimal        @db.Decimal(12, 2)
+  currencySettlement    String         @default("KES") @db.VarChar(3)
+  exchangeRateUsed      Decimal        @db.Decimal(15, 6)
+  exchangeRateId        String?
+  exchangeRateTimestamp DateTime
+  paymentMethod         String?
+  transactionReference  String         @unique
+  paymentEventId        String?
+  status                DonationStatus @default(PENDING)
+  paymentVerifiedAt     DateTime?
+  paymentFailedReason   String?
+  anonymous             Boolean        @default(false)
+  publicRecognition     Boolean        @default(true)
+  message               String?        @db.VarChar(500)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  // Relationships
+  donor              Donor               @relation(fields: [donorId], references: [id])
+  project            Project             @relation(fields: [projectId], references: [id])
+  exchangeRate       ExchangeRate?       @relation(fields: [exchangeRateId], references: [id])
+  paymentEvent       PaymentEvent?       @relation(fields: [paymentEventId], references: [id])
+  paymentTransaction PaymentTransaction?
+  settlement         Settlement?
+  receipt            Receipt?
+  refundReversals    RefundReversal[]
+  notifications      Notification[]
+  User               User?               @relation(fields: [userId], references: [id])
+  userId             String?
+  Currency           Currency?           @relation(fields: [currencyId], references: [id])
+  currencyId         String?
+
+  @@index([donorId])
+  @@index([projectId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([paymentVerifiedAt])
+  @@index([transactionReference])
+  @@index([paymentEventId])
+}
+
+model PaymentTransaction {
+  id                    String    @id @default(cuid())
+  donationId            String    @unique
+  providerCode          String
+  providerTransactionId String    @unique
+  providerStatus        String
+  initiatedAt           DateTime
+  confirmedAt           DateTime?
+  phoneNumber           String?
+  providerResponse      Json?
+  createdAt             DateTime  @default(now())
+
+  // Relationships
+  donation      Donation       @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  paymentEvents PaymentEvent[]
+
+  @@index([providerTransactionId])
+  @@index([donationId])
+  @@index([providerStatus])
+  @@index([confirmedAt])
+}
+
+model PaymentEvent {
+  id                   String    @id @default(cuid())
+  paymentTransactionId String
+  eventId              String    @unique
+  eventType            String
+  eventTimestamp       DateTime
+  payload              Json
+  processed            Boolean   @default(false)
+  processedAt          DateTime?
+  processingStatus     String? // SUCCESS, FAILED, PENDING
+  processingError      String?
+  createdAt            DateTime  @default(now())
+
+  // Relationships
+  paymentTransaction PaymentTransaction @relation(fields: [paymentTransactionId], references: [id], onDelete: Cascade)
+  donations          Donation[]
+
+  @@index([eventId])
+  @@index([paymentTransactionId])
+  @@index([processed])
+  @@index([eventType])
+  @@index([eventTimestamp])
+  @@index([processingStatus])
+}
+
+model Settlement {
+  id               String   @id @default(cuid())
+  donationId       String   @unique
+  amountKES        Decimal  @db.Decimal(12, 2)
+  exchangeRateUsed Decimal  @db.Decimal(15, 6)
+  settlementDate   DateTime
+  status           String   @default("PENDING") // PENDING, SETTLED, REVERSED, REFUNDED
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  // Relationships
+  donation       Donation      @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  exchangeRate   ExchangeRate? @relation(fields: [exchangeRateId], references: [id])
+  exchangeRateId String?
+
+  @@index([donationId])
+  @@index([status])
+  @@index([settlementDate])
+}
+
+model RefundReversal {
+  id               String               @id @default(cuid())
+  donationId       String
+  refundType       RefundType
+  amountRefunded   Decimal              @db.Decimal(12, 2)
+  reason           String
+  initiatedBy      String?
+  providerRefundId String?
+  status           RefundReversalStatus @default(PENDING)
+  processedAt      DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  // Relationships
+  donation  Donation @relation(fields: [donationId], references: [id])
+  initiator User?    @relation("RefundInitiator", fields: [initiatedBy], references: [id])
+
+  @@index([donationId])
+  @@index([refundType])
+  @@index([status])
+  @@index([processedAt])
+}
+
+// ============================================================
+// RECEIPT & NOTIFICATION ENTITIES
+// ============================================================
+
+model Receipt {
+  id                    String    @id @default(cuid())
+  donationId            String    @unique
+  donorId               String
+  receiptNumber         String    @unique
+  amountOriginal        Decimal   @db.Decimal(12, 2)
+  currencyOriginal      String    @db.VarChar(3)
+  amountSettlement      Decimal   @db.Decimal(12, 2)
+  currencySettlement    String    @db.VarChar(3)
+  exchangeRate          Decimal   @db.Decimal(15, 6)
+  exchangeRateTimestamp DateTime
+  paymentReference      String
+  verificationTimestamp DateTime
+  issuedAt              DateTime  @default(now())
+  sentAt                DateTime?
+  createdAt             DateTime  @default(now())
+
+  // Relationships
+  donation Donation @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  donor    Donor    @relation(fields: [donorId], references: [id])
+  User     User?    @relation(fields: [userId], references: [id])
+  userId   String?
+
+  @@index([donationId])
+  @@index([donorId])
+  @@index([receiptNumber])
+  @@index([issuedAt])
+}
+
+model Notification {
+  id               String             @id @default(cuid())
+  donationId       String
+  donorId          String?
+  notificationType String // "thank_you", "receipt", "update", etc.
+  channel          String // "email", "sms", "push", "in_app"
+  recipientAddress String? // email, phone, or user ID
+  subject          String?
+  body             String?
+  status           NotificationStatus @default(PENDING)
+  sentAt           DateTime?
+  deliveredAt      DateTime?
+  readAt           DateTime?
+  failureReason    String?
+  retryCount       Int                @default(0)
+  maxRetries       Int                @default(3)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  // Relationships
+  donation Donation @relation(fields: [donationId], references: [id], onDelete: Cascade)
+
+  @@index([donationId])
+  @@index([status])
+  @@index([channel])
+  @@index([sentAt])
+  @@index([createdAt])
+}
+
+// ============================================================
+// PROJECT ENTITIES
+// ============================================================
+
+model Project {
+  id                    String        @id @default(cuid())
+  slug                  String        @unique
+  name                  String
+  description           String?
+  category              String?
+  targetAmount          Decimal       @db.Decimal(12, 2)
+  targetCurrency        String        @default("KES") @db.VarChar(3)
+  raisedAmountKES       Decimal       @default(0) @db.Decimal(12, 2)
+  raisedAmountOriginal  Decimal       @default(0) @db.Decimal(12, 2)
+  pledgedAmountKES      Decimal       @default(0) @db.Decimal(12, 2)
+  pledgedAmountOriginal Decimal       @default(0) @db.Decimal(12, 2)
+  status                ProjectStatus @default(PLANNING)
+  launchDate            DateTime?
+  targetEndDate         DateTime?
+  actualEndDate         DateTime?
+  imageUrl              String?
+  featured              Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  archivedAt            DateTime?
+
+  // Relationships
+  donations          Donation[]
+  pledges            Pledge[]
+  constructionPhases ConstructionPhase[]
+  progressUpdates    ProgressUpdate[]
+  budgets            Budget[]
+  volunteerShifts    VolunteerShift[]
+  materials          Material[]
+  seatingSponsorship SeatingSponsorship[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([featured])
+  @@index([createdAt])
+}
+
+model Pledge {
+  id                   String       @id @default(cuid())
+  donorId              String
+  projectId            String
+  totalAmount          Decimal      @db.Decimal(12, 2)
+  pledgeCurrency       String       @db.VarChar(3)
+  totalAmountKES       Decimal      @db.Decimal(12, 2)
+  frequency            String // "one_time", "monthly", "quarterly", "yearly"
+  installmentAmount    Decimal      @db.Decimal(12, 2)
+  numberOfInstallments Int
+  amountPaid           Decimal      @default(0) @db.Decimal(12, 2)
+  remainingAmount      Decimal      @db.Decimal(12, 2)
+  status               PledgeStatus @default(ACTIVE)
+  startDate            DateTime     @default(now())
+  expectedEndDate      DateTime
+  actualEndDate        DateTime?
+  nextPaymentDueDate   DateTime
+  lastPaymentDate      DateTime?
+  defaultNoticeSent    Int          @default(0)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  // Relationships
+  donor   Donor   @relation(fields: [donorId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
+
+  @@index([donorId])
+  @@index([projectId])
+  @@index([status])
+  @@index([nextPaymentDueDate])
+  @@index([createdAt])
+}
+
+// ============================================================
+// CONSTRUCTION & PROGRESS ENTITIES
+// ============================================================
+
+model ConstructionPhase {
+  id               String                  @id @default(cuid())
+  projectId        String
+  name             String
+  description      String?
+  status           ConstructionPhaseStatus @default(PLANNED)
+  plannedStartDate DateTime
+  plannedEndDate   DateTime
+  actualStartDate  DateTime?
+  actualEndDate    DateTime?
+  percentComplete  Int                     @default(0)
+  budget           Decimal                 @db.Decimal(12, 2)
+  spentAmount      Decimal                 @default(0) @db.Decimal(12, 2)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  // Relationships
+  project         Project          @relation(fields: [projectId], references: [id])
+  progressUpdates ProgressUpdate[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ProgressUpdate {
+  id                  String    @id @default(cuid())
+  projectId           String
+  constructionPhaseId String?
+  title               String
+  description         String
+  imageUrl            String?
+  percentComplete     Int?
+  publishedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relationships
+  project Project            @relation(fields: [projectId], references: [id])
+  phase   ConstructionPhase? @relation(fields: [constructionPhaseId], references: [id])
+
+  @@index([projectId])
+  @@index([publishedAt])
+  @@index([createdAt])
+}
+
+model Budget {
+  id              String    @id @default(cuid())
+  projectId       String
+  year            Int
+  category        String
+  allocatedAmount Decimal   @db.Decimal(12, 2)
+  spentAmount     Decimal   @default(0) @db.Decimal(12, 2)
+  remainingAmount Decimal   @db.Decimal(12, 2)
+  status          String    @default("PLANNED") // PLANNED, ACTIVE, REVIEWED, CLOSED
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relationships
+  project  Project   @relation(fields: [projectId], references: [id])
+  expenses Expense[]
+
+  @@unique([projectId, year, category])
+  @@index([projectId])
+  @@index([status])
+  @@index([year])
+}
+
+model Expense {
+  id              String        @id @default(cuid())
+  budgetId        String
+  description     String
+  amount          Decimal       @db.Decimal(12, 2)
+  vendor          String?
+  receiptUrl      String?
+  category        String?
+  status          ExpenseStatus @default(PENDING)
+  submittedBy     String
+  approvedBy      String?
+  approvedAt      DateTime?
+  paidAt          DateTime?
+  rejectionReason String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relationships
+  budget    Budget @relation(fields: [budgetId], references: [id])
+  submitter User   @relation("ExpenseSubmitter", fields: [submittedBy], references: [id])
+  approver  User?  @relation("ExpenseApprover", fields: [approvedBy], references: [id])
+
+  @@index([budgetId])
+  @@index([status])
+  @@index([submittedBy])
+  @@index([approvedBy])
+  @@index([createdAt])
+}
+
+// ============================================================
+// VOLUNTEER & MATERIALS ENTITIES
+// ============================================================
+
+model Volunteer {
+  id                String          @id @default(cuid())
+  userId            String          @unique
+  skills            Json? // JSON array of skills
+  availabilityNotes String?
+  totalHoursWorked  Int             @default(0)
+  status            VolunteerStatus @default(ACTIVE)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  archivedAt        DateTime?
+
+  // Relationships
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shifts VolunteerShift[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([totalHoursWorked])
+}
+
+model VolunteerShift {
+  id            String      @id @default(cuid())
+  volunteerId   String
+  projectId     String?
+  title         String
+  description   String?
+  scheduledDate DateTime
+  startTime     DateTime
+  endTime       DateTime
+  hoursWorked   Decimal?    @db.Decimal(5, 2)
+  status        ShiftStatus @default(SCHEDULED)
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relationships
+  volunteer Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  project   Project?  @relation(fields: [projectId], references: [id])
+  User      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+
+  @@index([volunteerId])
+  @@index([projectId])
+  @@index([status])
+  @@index([scheduledDate])
+}
+
+model Material {
+  id               String         @id @default(cuid())
+  projectId        String
+  name             String
+  description      String?
+  category         String
+  quantity         Decimal        @db.Decimal(10, 2)
+  unit             String
+  cost             Decimal        @db.Decimal(12, 2)
+  status           MaterialStatus @default(REQUESTED)
+  supplier         String?
+  purchaseDate     DateTime?
+  expectedDelivery DateTime?
+  deliveryDate     DateTime?
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  // Relationships
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([status])
+  @@index([category])
+}
+
+model SeatingSponsorship {
+  id                String        @id @default(cuid())
+  projectId         String
+  seatNumber        Int
+  status            SeatingStatus @default(AVAILABLE)
+  sponsorName       String?
+  sponsorEmail      String?
+  sponsorAmount     Decimal       @db.Decimal(12, 2)
+  sponsorCurrency   String?       @db.VarChar(3)
+  dedicationMessage String?
+  reservedAt        DateTime?
+  sponsorshipDate   DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relationships
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId, seatNumber])
+  @@index([projectId])
+  @@index([status])
+  @@index([sponsorEmail])
+}
+
+// ============================================================
+// AUDIT LOG ENTITY
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actor      String? // User ID
+  action     String // e.g., "CREATE", "UPDATE", "DELETE", "APPROVE"
+  entityType String // e.g., "Donation", "Expense", "User"
+  entityId   String
+  beforeData Json? // Snapshot of data before change
+  afterData  Json? // Snapshot of data after change
+  metadata   Json? // Additional context
+  timestamp  DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  // Relationships
+  user User? @relation(fields: [actor], references: [id])
+
+  @@index([actor])
+  @@index([action])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([timestamp])
+}
